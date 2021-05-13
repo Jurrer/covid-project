@@ -1,21 +1,11 @@
-import sys
-
-from PyQt5.QtWidgets import QApplication, QWidget
-
-
-class EmptyWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        width = 1260
-        height = 680
-        self.resize(width, height)
-        self.setWindowTitle("Empty Window")
-        self.show()
-
 if __name__ == "__main__":
-    # print("Hello World")
-    # print("Ez")
-    app = QApplication([])
+    apk = QApplication([])
 
-    empty_wyswietl = EmptyWindow()
-    sys.exit(app.exec())
+    width, height = 1260, 680
+    tabs_app = Main_Window(width, height)
+
+    sys.exit(apk.exec_())
+
+    print("Hello World")
+    print("Ez")
+    print("Tomek update")
