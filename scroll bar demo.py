@@ -5,8 +5,6 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 import pandas as pd
 import csv
 
-COUNTRY_COLUMN_ID = 1
-
 
 class AppDemo(QWidget):
     def __init__(self, companies):
@@ -14,7 +12,6 @@ class AppDemo(QWidget):
         self.resize(1200, 1000)
         mainLayout = QVBoxLayout()
         self.__companies = companies
-        print(self.__companies)
         model = QStandardItemModel(len(self.__companies), 1)
         model.setHorizontalHeaderLabels(['Company'])
         for row, company in enumerate(self.__companies):
