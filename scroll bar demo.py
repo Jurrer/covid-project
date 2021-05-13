@@ -5,14 +5,14 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 
 class AppDemo(QWidget):
-    def __init__(self):
+    def __init__(self, companies):
         super().__init__()
         self.resize(1200, 1000)
         mainLayout = QVBoxLayout()
-        companies = ('Apple', 'Facebook', 'Google', 'Amazon', 'Walmart', 'Dropbox', 'Starbucks', 'eBay', 'Canon')
-        model = QStandardItemModel(len(companies), 1)
+        self.__companies = companies
+        model = QStandardItemModel(len(self.__companies), 1)
         model.setHorizontalHeaderLabels(['Company'])
-        for row, company in enumerate(companies):
+        for row, company in enumerate(self.__companies):
             item = QStandardItem(company)
             model.setItem(row, 0, item)
         filter_proxy_model = QSortFilterProxyModel()
@@ -30,6 +30,25 @@ class AppDemo(QWidget):
         table.setModel(filter_proxy_model)
         mainLayout.addWidget(table)
         self.setLayout(mainLayout)
+
+def read_countries_data(filepath, countries):
+    countries_data = dict()
+
+    with open(filepath, "r") as f:
+        for line in f:
+            maybe_country = line.split(",")[COUNTRY_COLUMN_ID]
+
+            if maybe_country in countries:
+                line = line.strip()
+                n_of_patients_in_time = get_patients_as_vector(line)
+
+                countries_data[maybe_country] = n_of_patients_in_time
+
+    return countries_data
+
+
+countries_data = read_countries_data(filepath, countries)
+
 app = QApplication(sys.argv)
 demo = AppDemo()
 demo.show()
