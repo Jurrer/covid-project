@@ -45,7 +45,8 @@ col_list = data[0]
 df = pd.read_csv(filename, usecols=col_list)
 
 countries = list(df["Country/Region"])
-
+# powtarzają się kraje, ponieważ plik ma podział na  prowincje. My nie rozróżniamy prowincji, więc trzeba będzie
+# dodać do siebie te dane. #todo
 app = QApplication(sys.argv)
 demo = AppDemo(countries)
 demo.show()
