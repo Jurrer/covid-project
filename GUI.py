@@ -1,17 +1,21 @@
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
-    QGridLayout
+    QGridLayout, QLineEdit
 
 
 class Okno(QMainWindow):
     def __init__(self, width, height):
         super().__init__()
-        self.setWindowTitle("CovidPlots")
-        self.__set_window_in_center(width, height)
-        layout = QGridLayout()
-        self.__tabs_widget = TabsWidget(self, width, height)
-        self.setCentralWidget(self.__tabs_widget)
-        self.show()
+        self.__prepare_window()
+
+        def __prepare_window(self):
+            self.setWindowTitle("CovidPlots")
+            self.__set_window_in_center(width, height)
+            layout = QGridLayout()
+            self.__tabs_widget = TabsWidget(self, width, height)
+            self.__szukajka = Szukajka()
+            self.setCentralWidget(self.__tabs_widget)
+            self.show()
 
     def __set_window_in_center(self, width, height):
         self.setGeometry(0, 0, width, height)
@@ -19,6 +23,12 @@ class Okno(QMainWindow):
         srodek = QDesktopWidget().availableGeometry(id).center()
         top_left = QPoint(srodek.x() - width / 2, srodek.y() - height / 2)
         self.move(top_left)
+
+class Szukajka(QWidget):
+    def __init__(self):
+        self.szukajka = QLineEdit()
+        layout.addWidget(self.szukajka)
+        self.setLayout(layout)
 
 
 class TabsWidget(QWidget):
@@ -41,6 +51,8 @@ class TabsWidget(QWidget):
 
         layout.addWidget(self.__tabs)
         self.setLayout(layout)
+
 class Button(QPushButton):
     def __init__(self, name):
         self.__name = name
+        self.__button = QPushButton()
