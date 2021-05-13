@@ -2,6 +2,10 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLineEdit, QTableView, QHeaderView, QVBoxLayout
 from PyQt5.QtCore import Qt, QSortFilterProxyModel
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
+import pandas as pd
+import csv
+
+COUNTRY_COLUMN_ID = 1
 
 
 class AppDemo(QWidget):
@@ -10,6 +14,7 @@ class AppDemo(QWidget):
         self.resize(1200, 1000)
         mainLayout = QVBoxLayout()
         self.__companies = companies
+        print(self.__companies)
         model = QStandardItemModel(len(self.__companies), 1)
         model.setHorizontalHeaderLabels(['Company'])
         for row, company in enumerate(self.__companies):
@@ -31,25 +36,20 @@ class AppDemo(QWidget):
         mainLayout.addWidget(table)
         self.setLayout(mainLayout)
 
-def read_countries_data(filepath, countries):
-    countries_data = dict()
-
-    with open(filepath, "r") as f:
-        for line in f:
-            maybe_country = line.split(",")[COUNTRY_COLUMN_ID]
-
-            if maybe_country in countries:
-                line = line.strip()
-                n_of_patients_in_time = get_patients_as_vector(line)
-
-                countries_data[maybe_country] = n_of_patients_in_time
-
-    return countries_data
 
 
-countries_data = read_countries_data(filepath, countries)
+filename = 'time_series_covid19_confirmed_global.csv'
+
+with open(filename, newline='') as f:
+    reader = csv.reader(f)
+    data = list(reader)
+
+col_list = data[0]
+df = pd.read_csv(filename, usecols=col_list)
+
+countries = list(df["Country/Region"])
 
 app = QApplication(sys.argv)
-demo = AppDemo()
+demo = AppDemo(countries)
 demo.show()
 sys.exit(app.exec_())
