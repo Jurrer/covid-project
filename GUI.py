@@ -11,9 +11,8 @@ class Okno(QMainWindow):
     def __prepare_window(self, width, height):
         self.setWindowTitle("CovidPlots")
         self.__set_window_in_center(width, height)
-        main_layout = QGridLayout()
         self.__tabs_widget = TabsWidget(self, width, height)
-        main_layout.addWidget(self.__tabs_widget)
+        self.setCentralWidget(self.__tabs_widget)
         self.show()
 
     def __set_window_in_center(self, width, height):
@@ -28,14 +27,41 @@ class TabsWidget(QWidget):
 
     def __init__(self, parent, width, height):
         super().__init__(parent)
-        layout = QVBoxLayout()
-        self.__tab1 = QTabWidget()
-        self.__tab2 = QTabWidget()
-        self.__tabs.addTab(self.__tab1, "Zachorowania")
-        self.__tabs.addTab(self.__tab2, "Ozdrowienia")
+        layout = QGridLayout()
+        self.__tabs = QTabWidget()
+        self.__tabs.resize(width, height)
+        # self.__tab1 = TabInside()
+        self.__tab2 = TabInside()
 
-        layout.addWidget(self.__tab1)
-        layout.addWidget(self.__tab2)
+        self.__tabs.addTab(TabInside(), "Zachorowania")
+        self.__tabs.addTab(TabInside(), "Ozdrowienia")
+
+        layout.addWidget(self.__tabs)
+        self.setLayout(layout)
+
+
+class TabInside(QWidget):
+    def __init__(self):
+        super().__init__()
+        layout = QGridLayout()
+        self.panstwa = PointsTab(25)
+        self.wyszukiwarka = QLineEdit("SZUKAJ.........")
+        self.bledy = QLineEdit("BLAD! MORDO TO MIAL BYC CSV")
+        self.button1 = QPushButton("wczytaj plik")
+        self.button2 = QPushButton("tutaj bedzie suwak")
+        self.button3 = QPushButton("tutaj bedzie drugi suwak")
+        self.button4 = QPushButton("eksportuj do pdf")
+        self.button5 = QPushButton("resetuj")
+        self.wykres = QLabel()
+        layout.addWidget(self.wykres, 1, 0, 7, 4)
+        layout.addWidget(self.bledy, 0, 0, 1, 2)
+        layout.addWidget(self.wyszukiwarka, 0, 4, 1, 2)
+        layout.addWidget(self.panstwa, 1, 4, 2, 2)
+        layout.addWidget(self.button1, 3, 4, 1, 2)
+        layout.addWidget(self.button2, 4, 4, 1, 2)
+        layout.addWidget(self.button3, 5, 4, 1, 2)
+        layout.addWidget(self.button4, 6, 4, 1, 2)
+        layout.addWidget(self.button5, 7, 4, 1, 2)
         self.setLayout(layout)
 
 
@@ -52,7 +78,6 @@ class PointsTab(QScrollArea):
             name = f"btn{i}"
             label = QLabel(name)
             btn = QPushButton(name)
-            # btn.clicked.connect((lambda name_to_show: lambda _: print(name_to_show))(name))
             btn.clicked.connect(self.func_print_me(name))
             btn_layout.addRow(label, btn)
 
