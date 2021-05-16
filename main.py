@@ -9,6 +9,5 @@ if __name__ == "__main__":
 
     width, height = 1260, 680
     tabs_app = Okno(width, height)
-    #plik = WczytajPlik()
 
     sys.exit(apk.exec_())

@@ -1,18 +1,28 @@
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QLineEdit
+
+from exceptions import ZlyFormatPliku, ZleDane
 
 
 class WczytajPlik(QFileDialog):
     def __init__(self):
         super().__init__()
+        self.blad = None
         filename = self.__open_file()
         self.__test_filename(filename)
-        self.countries_data = self.__load_data(filename)
 
     def get_countries_data(self):
         return self.countries_data
 
     def __open_file(self):
-        filename = QFileDialog.getOpenFileName()[0]
+        try:
+            filename = QFileDialog.getOpenFileName()[0]
+            if filename[-3:] != "csv":
+                raise ZlyFormatPliku
+            self.countries_data = self.__load_data(filename)
+        except ZlyFormatPliku as err:
+            self.blad = str(err)
+            self.countries_data = None
+
         return filename
 
     def __test_filename(self, filename):
@@ -23,6 +33,7 @@ class WczytajPlik(QFileDialog):
         column = 4
         lista_krajow = list()
         lista_pacjentow = list()
+
         with open(filename, "r") as f:
             for line in f:
                 country_name = line.split(",")[1]
@@ -34,6 +45,7 @@ class WczytajPlik(QFileDialog):
                 # countries_data[country_name] = patients
             countries_data = self.__sumuj_przebiegi(lista_krajow, lista_pacjentow)
             # country_names = list(countries_data.keys())
+
         return countries_data
 
     def __sumuj_przebiegi(self, names, values):

@@ -1,8 +1,10 @@
+from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 
 from dzialania_na_plikach import WczytajPlik
+from exceptions import ZleDane
 
 
 class Okno(QMainWindow):
@@ -49,7 +51,9 @@ class TabInside(QWidget):
         self.countries_data = dict()
         self.panstwa = PointsTab([])
         self.wyszukiwarka = QLineEdit("SZUKAJ.........")
-        self.bledy = QLineEdit("BLAD! MORDO TO MIAL BYC CSV")
+        self.bledy = QLineEdit("Chwilowo brak błędu...")
+        QLineEdit.setReadOnly(self.bledy, True)
+        self.bledy.setAlignment(QtCore.Qt.AlignCenter)
         self.button1 = QPushButton("wczytaj plik")
         self.button2 = QPushButton("tutaj bedzie suwak")
         self.button3 = QPushButton("tutaj bedzie drugi suwak")
@@ -70,10 +74,18 @@ class TabInside(QWidget):
         self.button1.clicked.connect(self.__btn1)
 
     def __btn1(self):
-        self.countries_data = WczytajPlik().get_countries_data()
-        self.panstwa = PointsTab(list(self.countries_data.keys()))
-        self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
+        file = WczytajPlik()
+        print(file.blad)
+        self.error_change(file.blad)
+        self.countries_data = file.get_countries_data()
+        if self.countries_data:
+            self.panstwa = PointsTab(list(self.countries_data.keys()))
+            self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
+    def error_change(self, error):
+        if error:
+            self.bledy.clear()
+            self.bledy.setText(error)
 
 class PointsTab(QScrollArea):
     def __init__(self, names):
