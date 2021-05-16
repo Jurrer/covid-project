@@ -33,7 +33,7 @@ class TabsWidget(QWidget):
         self.__tabs = QTabWidget()
         self.__tabs.resize(width, height)
         # self.__tab1 = TabInside()
-        self.__tab2 = TabInside()
+        # self.__tab2 = TabInside()
 
         self.__tabs.addTab(TabInside(), "Zachorowania")
         self.__tabs.addTab(TabInside(), "Ozdrowienia")
@@ -45,8 +45,9 @@ class TabsWidget(QWidget):
 class TabInside(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QGridLayout()
-        self.panstwa = PointsTab(25)
+        self.layout = QGridLayout()
+        self.countries_data = dict()
+        self.panstwa = PointsTab([])
         self.wyszukiwarka = QLineEdit("SZUKAJ.........")
         self.bledy = QLineEdit("BLAD! MORDO TO MIAL BYC CSV")
         self.button1 = QPushButton("wczytaj plik")
@@ -55,38 +56,40 @@ class TabInside(QWidget):
         self.button4 = QPushButton("eksportuj do pdf")
         self.button5 = QPushButton("resetuj")
         self.wykres = QLabel()
-        layout.addWidget(self.wykres, 1, 0, 7, 4)
-        layout.addWidget(self.bledy, 0, 0, 1, 2)
-        layout.addWidget(self.wyszukiwarka, 0, 4, 1, 2)
-        layout.addWidget(self.panstwa, 1, 4, 2, 2)
-        layout.addWidget(self.button1, 3, 4, 1, 2)
-        layout.addWidget(self.button2, 4, 4, 1, 2)
-        layout.addWidget(self.button3, 5, 4, 1, 2)
-        layout.addWidget(self.button4, 6, 4, 1, 2)
-        layout.addWidget(self.button5, 7, 4, 1, 2)
-        self.setLayout(layout)
+        self.layout.addWidget(self.wykres, 1, 0, 7, 4)
+        self.layout.addWidget(self.bledy, 0, 0, 1, 2)
+        self.layout.addWidget(self.wyszukiwarka, 0, 4, 1, 2)
+        self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
+        self.layout.addWidget(self.button1, 3, 4, 1, 2)
+        self.layout.addWidget(self.button2, 4, 4, 1, 2)
+        self.layout.addWidget(self.button3, 5, 4, 1, 2)
+        self.layout.addWidget(self.button4, 6, 4, 1, 2)
+        self.layout.addWidget(self.button5, 7, 4, 1, 2)
 
+        self.setLayout(self.layout)
         self.button1.clicked.connect(self.__btn1)
 
     def __btn1(self):
-        WczytajPlik()
+        self.countries_data = WczytajPlik().get_countries_data()
+        self.panstwa = PointsTab(list(self.countries_data.keys()))
+        self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
 
 class PointsTab(QScrollArea):
-    def __init__(self, size):
+    def __init__(self, names):
         super().__init__()
-        self.__init_view(size)
+        self.__init_view(names)
 
-    def __init_view(self, size):
+    def __init_view(self, names):
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
 
-        for i in range(size):
-            name = f"btn{i}"
-            label = QLabel(name)
-            btn = QPushButton(name)
-            btn.clicked.connect(self.func_print_me(name))
-            btn_layout.addRow(label, btn)
+        for name in names:
+            btnname = name
+            label = QLabel(btnname)
+            btn = QPushButton(btnname)
+            btn.clicked.connect(self.func_print_me(btnname))
+            btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
         self.setWidget(btn_group)

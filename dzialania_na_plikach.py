@@ -6,7 +6,10 @@ class WczytajPlik(QFileDialog):
         super().__init__()
         filename = self.__open_file()
         self.__test_filename(filename)
-        self.__load_data(filename)
+        self.countries_data = self.__load_data(filename)
+
+    def get_countries_data(self):
+        return self.countries_data
 
     def __open_file(self):
         filename = QFileDialog.getOpenFileName()[0]
@@ -30,9 +33,8 @@ class WczytajPlik(QFileDialog):
                 lista_pacjentow.append(patients)
                 # countries_data[country_name] = patients
             countries_data = self.__sumuj_przebiegi(lista_krajow, lista_pacjentow)
-            country_names = list(countries_data.keys())
-        print(countries_data)
-        print(country_names)
+            # country_names = list(countries_data.keys())
+        return countries_data
 
     def __sumuj_przebiegi(self, names, values):
         data = dict()
