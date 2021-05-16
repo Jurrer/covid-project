@@ -2,6 +2,8 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 
+from dzialania_na_plikach import WczytajPlik
+
 
 class Okno(QMainWindow):
     def __init__(self, width, height):
@@ -63,6 +65,11 @@ class TabInside(QWidget):
         layout.addWidget(self.button4, 6, 4, 1, 2)
         layout.addWidget(self.button5, 7, 4, 1, 2)
         self.setLayout(layout)
+
+        self.button1.clicked.connect(self.__btn1)
+
+    def __btn1(self):
+        WczytajPlik()
 
 
 class PointsTab(QScrollArea):

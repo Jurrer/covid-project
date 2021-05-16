@@ -8,7 +8,7 @@ COUNTRY_COLUMN_ID = 1
 
 def display_selected_data(filepath, countries):
     countries_data = read_countries_data(filepath, countries)
-    display_data(countries_data)
+    #display_data(countries_data)
 
 
 def read_countries_data(filepath, countries):
