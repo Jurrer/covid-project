@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="64ae7aa6-a7ed-46d2-baf9-3f9880da2549" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -131,7 +132,7 @@
       <workItem from="1621240377735" duration="7000" />
       <workItem from="1621240470608" duration="101000" />
       <workItem from="1621240587414" duration="11037000" />
-      <workItem from="1621259421378" duration="1404000" />
+      <workItem from="1621259421378" duration="4218000" />
     </task>
     <task id="LOCAL-00001" summary="Ez">
       <created>1619086280349</created>
@@ -182,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621260579906</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="poprawione wyszukiwanie niezalezne od wielkosci liter">
+      <created>1621260909161</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1621260909161</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,11 +216,12 @@
     <MESSAGE value="poprawiona estetyka błędu" />
     <MESSAGE value="działa wyszukiwanie" />
     <MESSAGE value="poprawione wyszukiwanie" />
-    <option name="LAST_COMMIT_MESSAGE" value="poprawione wyszukiwanie" />
+    <MESSAGE value="poprawione wyszukiwanie niezalezne od wielkosci liter" />
+    <option name="LAST_COMMIT_MESSAGE" value="poprawione wyszukiwanie niezalezne od wielkosci liter" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/covid_project$covid_example.coverage" NAME="covid_example Coverage Results" MODIFIED="1621187633422" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W3_kod/plot_example" />
     <SUITE FILE_PATH="coverage/covid_project$reader_example_script.coverage" NAME="reader_example_script Coverage Results" MODIFIED="1621198662802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W7_kod/LIVE_08_04_2021/3_exceptions" />
-    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621260837697" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621263680307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

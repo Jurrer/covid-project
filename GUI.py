@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtGui import QKeyEvent
+from PyQt5.QtCore import QPoint, Qt, pyqtSignal, QEvent
+from PyQt5.QtGui import QKeyEvent, QMouseEvent
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 
@@ -129,35 +129,35 @@ class PointsTab(QScrollArea):
         self.setWidgetResizable(True)
 
     def __change_view(self, country):
-            btn_layout = QFormLayout()
-            btn_group = QGroupBox()
-            country = country.upper()
+        btn_layout = QFormLayout()
+        btn_group = QGroupBox()
+        country = country.upper()
 
-            tmp = 0
+        tmp = 0
 
-            for name in self.names:
-                name_copy = name.upper()
-                if len(name) >= len(country):
-                    for i in range(len(country)):
-                        if country[i] == name_copy[i]:
-                            tmp = 1
-                        else:
-                            tmp = 0
-                            break
-                    if tmp != 0:
-                        btnname = name
-                        btn = QPushButton(btnname)
-                        btn.clicked.connect(self.func_print_me(btnname))
-                        btn_layout.addRow(btn)
+        for name in self.names:
+            name_copy = name.upper()
+            if len(name) >= len(country):
+                for i in range(len(country)):
+                    if country[i] == name_copy[i]:
+                        tmp = 1
+                    else:
+                        tmp = 0
+                        break
+                if tmp != 0:
+                    btnname = name
+                    btn = QPushButton(btnname)
+                    btn.clicked.connect(self.func_print_me(btnname))
+                    btn_layout.addRow(btn)
 
-            btn_group.setLayout(btn_layout)
-            self.setWidget(btn_group)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-            self.setWidgetResizable(True)
+        btn_group.setLayout(btn_layout)
+        self.setWidget(btn_group)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.setWidgetResizable(True)
 
     def search_by_letter(self, letter):
         letter = letter.upper()
-        #print(letter)
+        # print(letter)
         names = self.names
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
