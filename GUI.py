@@ -100,6 +100,9 @@ class TabInside(QWidget):
         else:
             self.panstwa.search(self.panstwo)
 
+    def __usun(self):
+        self.wyszukiwarka.clear()
+
 
 class PointsTab(QScrollArea):
     def __init__(self, names):
@@ -116,7 +119,6 @@ class PointsTab(QScrollArea):
 
         for name in names:
             btnname = name
-            label = QLabel(btnname)
             btn = QPushButton(btnname)
             btn.clicked.connect(self.func_print_me(btnname))
             btn_layout.addRow(btn)
@@ -135,9 +137,10 @@ class PointsTab(QScrollArea):
                 if len(name) >= len(country):
                     for i in range(len(country)):
                         if country[i] == name[i]:
-                            tmp += 1
+                            tmp = 1
                         else:
                             tmp = 0
+                            break
                     if tmp != 0:
                         btnname = name
                         btn = QPushButton(btnname)
@@ -158,7 +161,6 @@ class PointsTab(QScrollArea):
         for name in names:
             if name[0] == letter:
                 btnname = name
-                label = QLabel(btnname)
                 btn = QPushButton(btnname)
                 btn.clicked.connect(self.func_print_me(btnname))
                 btn_layout.addRow(btn)
