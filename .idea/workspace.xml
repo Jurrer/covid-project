@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="64ae7aa6-a7ed-46d2-baf9-3f9880da2549" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/exceptions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/GUI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dzialania_na_plikach.py" beforeDir="false" afterPath="$PROJECT_DIR$/dzialania_na_plikach.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/exceptions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +129,10 @@
       <workItem from="1620913117899" duration="106000" />
       <workItem from="1620913235123" duration="2968000" />
       <workItem from="1621182414120" duration="5401000" />
-      <workItem from="1621197098298" duration="6919000" />
+      <workItem from="1621197098298" duration="7037000" />
+      <workItem from="1621240377735" duration="7000" />
+      <workItem from="1621240470608" duration="101000" />
+      <workItem from="1621240587414" duration="1337000" />
     </task>
     <task id="LOCAL-00001" summary="Ez">
       <created>1619086280349</created>
@@ -154,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621187833494</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="dodany błąd ZlyFormatPliku (dziala i sie wyswietla)">
+      <created>1621204183782</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1621204183782</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,11 +184,12 @@
     <MESSAGE value="Ez" />
     <MESSAGE value="blad mialem" />
     <MESSAGE value="dodane qfilecostam" />
-    <option name="LAST_COMMIT_MESSAGE" value="dodane qfilecostam" />
+    <MESSAGE value="dodany błąd ZlyFormatPliku (dziala i sie wyswietla)" />
+    <option name="LAST_COMMIT_MESSAGE" value="dodany błąd ZlyFormatPliku (dziala i sie wyswietla)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/covid_project$covid_example.coverage" NAME="covid_example Coverage Results" MODIFIED="1621187633422" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W3_kod/plot_example" />
     <SUITE FILE_PATH="coverage/covid_project$reader_example_script.coverage" NAME="reader_example_script Coverage Results" MODIFIED="1621198662802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W7_kod/LIVE_08_04_2021/3_exceptions" />
-    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621204019667" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621242783944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

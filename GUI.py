@@ -75,7 +75,6 @@ class TabInside(QWidget):
 
     def __btn1(self):
         file = WczytajPlik()
-        print(file.blad)
         self.error_change(file.blad)
         self.countries_data = file.get_countries_data()
         if self.countries_data:
@@ -83,6 +82,8 @@ class TabInside(QWidget):
             self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
+        self.bledy.clear()
+        self.bledy.setText("Chwilowo brak błędu...")
         if error:
             self.bledy.clear()
             self.bledy.setText(error)
