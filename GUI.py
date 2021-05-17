@@ -131,12 +131,15 @@ class PointsTab(QScrollArea):
     def __change_view(self, country):
             btn_layout = QFormLayout()
             btn_group = QGroupBox()
+            country = country.upper()
+
             tmp = 0
 
             for name in self.names:
+                name_copy = name.upper()
                 if len(name) >= len(country):
                     for i in range(len(country)):
-                        if country[i] == name[i]:
+                        if country[i] == name_copy[i]:
                             tmp = 1
                         else:
                             tmp = 0
@@ -153,7 +156,8 @@ class PointsTab(QScrollArea):
             self.setWidgetResizable(True)
 
     def search_by_letter(self, letter):
-        print(letter)
+        letter = letter.upper()
+        #print(letter)
         names = self.names
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
