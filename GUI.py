@@ -1,11 +1,10 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QPoint, Qt, pyqtSignal, QEvent
-from PyQt5.QtGui import QKeyEvent, QMouseEvent
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 
 from dzialania_na_plikach import WczytajPlik
-from exceptions import ZleDane
+
 
 
 class Okno(QMainWindow):

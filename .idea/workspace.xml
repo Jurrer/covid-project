@@ -132,7 +132,8 @@
       <workItem from="1621240377735" duration="7000" />
       <workItem from="1621240470608" duration="101000" />
       <workItem from="1621240587414" duration="11037000" />
-      <workItem from="1621259421378" duration="4218000" />
+      <workItem from="1621259421378" duration="4253000" />
+      <workItem from="1621279615145" duration="307000" />
     </task>
     <task id="LOCAL-00001" summary="Ez">
       <created>1619086280349</created>
@@ -190,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621260909161</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="xd">
+      <created>1621263706978</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1621263706978</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -217,11 +225,12 @@
     <MESSAGE value="działa wyszukiwanie" />
     <MESSAGE value="poprawione wyszukiwanie" />
     <MESSAGE value="poprawione wyszukiwanie niezalezne od wielkosci liter" />
-    <option name="LAST_COMMIT_MESSAGE" value="poprawione wyszukiwanie niezalezne od wielkosci liter" />
+    <MESSAGE value="xd" />
+    <option name="LAST_COMMIT_MESSAGE" value="xd" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/covid_project$covid_example.coverage" NAME="covid_example Coverage Results" MODIFIED="1621187633422" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W3_kod/plot_example" />
     <SUITE FILE_PATH="coverage/covid_project$reader_example_script.coverage" NAME="reader_example_script Coverage Results" MODIFIED="1621198662802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekty_łewap/PO_W7_kod/LIVE_08_04_2021/3_exceptions" />
-    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621263680307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/covid_project$main.coverage" NAME="main Coverage Results" MODIFIED="1621279646831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

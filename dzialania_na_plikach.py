@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QFileDialog, QLineEdit
+from PyQt5.QtWidgets import QFileDialog
 
-from exceptions import ZlyFormatPliku, ZleDane
+from exceptions import ZlyFormatPliku
 
 
 class WczytajPlik(QFileDialog):
