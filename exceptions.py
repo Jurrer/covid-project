@@ -7,3 +7,8 @@ class ZleDane(Exception):
     def __init__(self):
         msg = "Błąd! Plik zawiera nieprawidłowe dane!"
         super().__init__(msg)
+
+class LimitPanstw(Exception):
+    def __init__(self):
+        msg = "Błąd! Został osiągnięty limit państw (6)!"
+        super().__init__(msg)

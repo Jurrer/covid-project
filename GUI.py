@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, 
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 
 from dzialania_na_plikach import WczytajPlik
+from exceptions import LimitPanstw
 
 
 class Okno(QMainWindow):
@@ -48,7 +49,7 @@ class Przyciski(QWidget):
         super().__init__()
         self.layout = QGridLayout()
         self.countries_data = dict()
-        self.panstwa = PointsTab([])
+        self.panstwa = PointsTab([], self)
         self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
         self.wyszukiwarka = QLineEdit("SZUKAJ...")
         self.bledy = QLineEdit("Chwilowo brak błędu...")
@@ -80,7 +81,7 @@ class Przyciski(QWidget):
         self.error_change(file.blad)
         self.countries_data = file.get_countries_data()
         if self.countries_data:
-            self.panstwa = PointsTab(list(self.countries_data.keys()))
+            self.panstwa = PointsTab(list(self.countries_data.keys()), self)
             self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
@@ -106,11 +107,13 @@ class Przyciski(QWidget):
 
 
 class PointsTab(QScrollArea):
-    def __init__(self, names):
+    def __init__(self, names, cos: Przyciski):
         super().__init__()
         self.names = names
         self.__init_view(names)
         self.lista_wybranych = []
+        self.blad = None
+        self.cos = cos
 
     def search(self, name):
         self.__change_view(name)
@@ -184,9 +187,20 @@ class PointsTab(QScrollArea):
 
     def __ogarnij_wybieranie(self, name):
         if name not in self.lista_wybranych:
-            self.lista_wybranych.append(name)
+            try:
+                if len(self.lista_wybranych) >= 6:
+                    raise LimitPanstw
+                else:
+                    self.lista_wybranych.append(name)
+                    self.blad = None
+                    self.cos.error_change(self.blad)
+            except LimitPanstw as err:
+                self.blad = str(err)
+                self.cos.error_change(self.blad)
         else:
             self.lista_wybranych.remove(name)
+            self.blad = None
+            self.cos.error_change(self.blad)
         print(self.lista_wybranych)
 
     def get_lista_wybranych(self):
