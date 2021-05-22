@@ -36,14 +36,14 @@ class TabsWidget(QWidget):
         # self.__tab1 = TabInside()
         # self.__tab2 = TabInside()
 
-        self.__tabs.addTab(TabInside(), "Zachorowania")
-        self.__tabs.addTab(TabInside(), "Ozdrowienia")
+        self.__tabs.addTab(Przyciski(), "Zachorowania")
+        self.__tabs.addTab(Przyciski(), "Ozdrowienia")
 
         layout.addWidget(self.__tabs)
         self.setLayout(layout)
 
 
-class TabInside(QWidget):
+class Przyciski(QWidget):
     def __init__(self):
         super().__init__()
         self.layout = QGridLayout()
@@ -101,6 +101,7 @@ class TabInside(QWidget):
 
     def __usun(self):
         self.wyszukiwarka.clear()
+
 
 
 class PointsTab(QScrollArea):
