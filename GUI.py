@@ -59,6 +59,7 @@ class Przyciski(QWidget):
         self.button3 = QPushButton("tutaj bedzie drugi suwak")
         self.button4 = QPushButton("eksportuj do pdf")
         self.button5 = QPushButton("resetuj")
+        # self.button6 = QPushButton("dziennie/calkowicie")
         self.wykres = QLabel()
         self.layout.addWidget(self.wykres, 1, 0, 7, 4)
         self.layout.addWidget(self.bledy, 0, 0, 1, 2)
@@ -69,11 +70,11 @@ class Przyciski(QWidget):
         self.layout.addWidget(self.button3, 5, 4, 1, 2)
         self.layout.addWidget(self.button4, 6, 4, 1, 2)
         self.layout.addWidget(self.button5, 7, 4, 1, 2)
+        # self.layout.addWidget(self.button6, 8, 4, 1, 2)
 
         self.setLayout(self.layout)
         self.button1.clicked.connect(self.__btn1)
         self.wyszukiwarka.textEdited.connect(self.__wyszukaj)
-
     def __btn1(self):
         file = WczytajPlik()
         self.error_change(file.blad)
