@@ -76,6 +76,8 @@ class Przyciski(QWidget):
         self.setLayout(self.layout)
         self.button1.clicked.connect(self.__btn1)
         self.wyszukiwarka.textEdited.connect(self.__wyszukaj)
+        self.button2.clicked.connect(self.__wypisz)
+
     def __btn1(self):
         file = WczytajPlik()
         self.error_change(file.blad)
@@ -103,6 +105,9 @@ class Przyciski(QWidget):
 
     def __usun(self):
         self.wyszukiwarka.clear()
+
+    def __wypisz(self):
+        print(self.countries_data)
 
 
 
@@ -201,7 +206,7 @@ class PointsTab(QScrollArea):
             self.lista_wybranych.remove(name)
             self.blad = None
             self.cos.error_change(self.blad)
-        print(self.lista_wybranych)
+        #print(self.lista_wybranych)
 
     def get_lista_wybranych(self):
         return self.lista_wybranych
