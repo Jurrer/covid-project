@@ -51,7 +51,7 @@ class Przyciski(QWidget):
         self.countries_data = dict()
         self.panstwa = PointsTab([], self)
         self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
-        self.wyszukiwarka = QLineEdit("SZUKAJ...")
+        self.wyszukiwarka = QLineEdit("Szukaj...")
         self.bledy = QLineEdit("Chwilowo brak błędu...")
         QLineEdit.setReadOnly(self.bledy, True)
         self.bledy.setAlignment(QtCore.Qt.AlignCenter)
@@ -87,11 +87,14 @@ class Przyciski(QWidget):
             self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
-        self.bledy.clear()
-        self.bledy.setText("Chwilowo brak błędu...")
         if error:
+            self.bledy.setStyleSheet("background-color: red;")
             self.bledy.clear()
             self.bledy.setText(error)
+        else:
+            self.bledy.setStyleSheet("background-color: white;")
+            self.bledy.clear()
+            self.bledy.setText("Chwilowo brak błędu...")
 
     def __wyszukaj(self):
         self.panstwo = self.wyszukiwarka.text()
@@ -107,16 +110,15 @@ class Przyciski(QWidget):
         self.wyszukiwarka.clear()
 
     def __wypisz(self):
-        print(self.countries_data)
-
+        print(self.lista_wybranych_krajow)
 
 
 class PointsTab(QScrollArea):
     def __init__(self, names, cos: Przyciski):
         super().__init__()
         self.names = names
+        self.lista_wybranych = list()
         self.__init_view(names)
-        self.lista_wybranych = []
         self.blad = None
         self.cos = cos
 
@@ -130,7 +132,8 @@ class PointsTab(QScrollArea):
         for name in names:
             btnname = name
             btn = QPushButton(btnname)
-            btn.clicked.connect(self.__choose_country(btnname))
+            btn.clicked.connect(self.__choose_country(btn, btnname))
+            self.__ustaw_kolory(btn, btnname)
             btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -157,7 +160,8 @@ class PointsTab(QScrollArea):
                 if tmp != 0:
                     btnname = name
                     btn = QPushButton(btnname)
-                    btn.clicked.connect(self.__choose_country(btnname))
+                    btn.clicked.connect(self.__choose_country(btn, btnname))
+                    self.__ustaw_kolory(btn, btnname)
                     btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -176,7 +180,8 @@ class PointsTab(QScrollArea):
             if name[0] == letter:
                 btnname = name
                 btn = QPushButton(btnname)
-                btn.clicked.connect(self.__choose_country(btnname))
+                btn.clicked.connect(self.__choose_country(btn, btnname))
+                self.__ustaw_kolory(btn, btnname)
                 btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -184,18 +189,25 @@ class PointsTab(QScrollArea):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.setWidgetResizable(True)
 
+    def __ustaw_kolory(self, btn, btnname):
+        if btnname in self.lista_wybranych:
+            btn.setStyleSheet("background-color : green")
+        else:
+            btn.setStyleSheet("background-color : light gray")
+
     def reset(self):
         self.__init_view(self.names)
 
-    def __choose_country(self, name):
-        return lambda _: self.__ogarnij_wybieranie(name)
+    def __choose_country(self, btn, name):
+        return lambda _: self.__ogarnij_wybieranie(btn, name)
 
-    def __ogarnij_wybieranie(self, name):
+    def __ogarnij_wybieranie(self, btn, name):
         if name not in self.lista_wybranych:
             try:
                 if len(self.lista_wybranych) >= 6:
                     raise LimitPanstw
                 else:
+                    btn.setStyleSheet("background-color : green")
                     self.lista_wybranych.append(name)
                     self.blad = None
                     self.cos.error_change(self.blad)
@@ -203,10 +215,11 @@ class PointsTab(QScrollArea):
                 self.blad = str(err)
                 self.cos.error_change(self.blad)
         else:
+            btn.setStyleSheet("background-color : light gray")
             self.lista_wybranych.remove(name)
             self.blad = None
             self.cos.error_change(self.blad)
-        #print(self.lista_wybranych)
+        # print(self.lista_wybranych)
 
     def get_lista_wybranych(self):
         return self.lista_wybranych
