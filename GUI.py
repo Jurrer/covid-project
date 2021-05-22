@@ -88,7 +88,7 @@ class Przyciski(QWidget):
 
     def error_change(self, error):
         if error:
-            self.bledy.setStyleSheet("background-color: red;")
+            self.bledy.setStyleSheet("background-color: tomato;")
             self.bledy.clear()
             self.bledy.setText(error)
         else:
@@ -191,9 +191,9 @@ class PointsTab(QScrollArea):
 
     def __ustaw_kolory(self, btn, btnname):
         if btnname in self.lista_wybranych:
-            btn.setStyleSheet("background-color : green")
+            btn.setStyleSheet("background-color : lightgreen")
         else:
-            btn.setStyleSheet("background-color : light gray")
+            btn.setStyleSheet("background-color : ")
 
     def reset(self):
         self.__init_view(self.names)
@@ -207,7 +207,7 @@ class PointsTab(QScrollArea):
                 if len(self.lista_wybranych) >= 6:
                     raise LimitPanstw
                 else:
-                    btn.setStyleSheet("background-color : green")
+                    btn.setStyleSheet("background-color : lightgreen")
                     self.lista_wybranych.append(name)
                     self.blad = None
                     self.cos.error_change(self.blad)
@@ -215,7 +215,7 @@ class PointsTab(QScrollArea):
                 self.blad = str(err)
                 self.cos.error_change(self.blad)
         else:
-            btn.setStyleSheet("background-color : light gray")
+            btn.setStyleSheet("background-color : ")
             self.lista_wybranych.remove(name)
             self.blad = None
             self.cos.error_change(self.blad)
