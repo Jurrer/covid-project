@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, 
 from dzialania_na_plikach import WczytajPlik
 
 
-
 class Okno(QMainWindow):
     def __init__(self, width, height):
         super().__init__()
@@ -50,7 +49,8 @@ class TabInside(QWidget):
         self.layout = QGridLayout()
         self.countries_data = dict()
         self.panstwa = PointsTab([])
-        self.wyszukiwarka = QLineEdit("SZUKAJ.........")
+        self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
+        self.wyszukiwarka = QLineEdit("SZUKAJ...")
         self.bledy = QLineEdit("Chwilowo brak błędu...")
         QLineEdit.setReadOnly(self.bledy, True)
         self.bledy.setAlignment(QtCore.Qt.AlignCenter)
@@ -108,6 +108,7 @@ class PointsTab(QScrollArea):
         super().__init__()
         self.names = names
         self.__init_view(names)
+        self.lista_wybranych = []
 
     def search(self, name):
         self.__change_view(name)
@@ -119,7 +120,7 @@ class PointsTab(QScrollArea):
         for name in names:
             btnname = name
             btn = QPushButton(btnname)
-            btn.clicked.connect(self.func_print_me(btnname))
+            btn.clicked.connect(self.__choose_country(btnname))
             btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -146,7 +147,7 @@ class PointsTab(QScrollArea):
                 if tmp != 0:
                     btnname = name
                     btn = QPushButton(btnname)
-                    btn.clicked.connect(self.func_print_me(btnname))
+                    btn.clicked.connect(self.__choose_country(btnname))
                     btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -165,7 +166,7 @@ class PointsTab(QScrollArea):
             if name[0] == letter:
                 btnname = name
                 btn = QPushButton(btnname)
-                btn.clicked.connect(self.func_print_me(btnname))
+                btn.clicked.connect(self.__choose_country(btnname))
                 btn_layout.addRow(btn)
 
         btn_group.setLayout(btn_layout)
@@ -176,5 +177,15 @@ class PointsTab(QScrollArea):
     def reset(self):
         self.__init_view(self.names)
 
-    def func_print_me(self, name):
-        return lambda _: print(name)
+    def __choose_country(self, name):
+        return lambda _: self.__ogarnij_wybieranie(name)
+
+    def __ogarnij_wybieranie(self, name):
+        if name not in self.lista_wybranych:
+            self.lista_wybranych.append(name)
+        else:
+            self.lista_wybranych.remove(name)
+        print(self.lista_wybranych)
+
+    def get_lista_wybranych(self):
+        return self.lista_wybranych
