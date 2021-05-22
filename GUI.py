@@ -53,6 +53,7 @@ class Przyciski(QWidget):
         self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
         self.wyszukiwarka = QLineEdit("Szukaj...")
         self.bledy = QLineEdit("Chwilowo brak błędu...")
+        self.bledy.setStyleSheet("background-color: whitesmoke;")
         QLineEdit.setReadOnly(self.bledy, True)
         self.bledy.setAlignment(QtCore.Qt.AlignCenter)
         self.button1 = QPushButton("wczytaj plik")
@@ -92,7 +93,7 @@ class Przyciski(QWidget):
             self.bledy.clear()
             self.bledy.setText(error)
         else:
-            self.bledy.setStyleSheet("background-color: white;")
+            self.bledy.setStyleSheet("background-color: whitesmoke;")
             self.bledy.clear()
             self.bledy.setText("Chwilowo brak błędu...")
 
