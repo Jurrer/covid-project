@@ -16,7 +16,7 @@ class WczytajPlik(QFileDialog):
     def __open_file(self):
         try:
             filename = QFileDialog.getOpenFileName()[0]
-            if filename[-3:] != "csv":
+            if filename.split(".")[-1] != "csv":
                 raise ZlyFormatPliku
             self.countries_data = self.__load_data(filename)
         except ZlyFormatPliku as err:
@@ -29,7 +29,6 @@ class WczytajPlik(QFileDialog):
         print(filename)
 
     def __load_data(self, filename):
-        countries_data = dict()
         column = 4
         lista_krajow = list()
         lista_pacjentow = list()
@@ -37,23 +36,21 @@ class WczytajPlik(QFileDialog):
         with open(filename, "r") as f:
             for line in f:
                 country_name = line.split(",")[1]
-                # print(country_name)
                 lista_krajow.append(country_name)
                 line = line.strip()
                 patients = line.split(",")[column:]
                 lista_pacjentow.append(patients)
-                # countries_data[country_name] = patients
             countries_data = self.__sumuj_przebiegi(lista_krajow, lista_pacjentow)
-            # country_names = list(countries_data.keys())
 
         return countries_data
+
 
     def __sumuj_przebiegi(self, names, values):
         data = dict()
         iterator = 1
         country_value = list()
         for name in names[1:]:
-            if iterator < len(names)-1:
+            if iterator < len(names) - 1:
                 next_name = names[iterator + 1]
                 if next_name == name:
                     country_value = self.__sumuj_listy(country_value, values[iterator])
@@ -72,8 +69,10 @@ class WczytajPlik(QFileDialog):
         value = list()
         if len(listaa) > 0:
             for i in range(len(listaa)):
-                v = int(listaa[i]) + int(listab[i])
+                v = abs(int(float(listaa[i]))) + abs(int(float(listab[i])))
                 value.append(v)
         elif len(listaa) == 0:
-            value = listab
+            for i in range(len(listab)):
+                v = abs(int(float(listab[i])))
+                value.append(v)
         return value

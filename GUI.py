@@ -2,9 +2,11 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
+import numpy as np
 
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
+from matplotlib import pyplot as plt
 
 
 class Okno(QMainWindow):
@@ -78,11 +80,50 @@ class Przyciski(QWidget):
         self.button1.clicked.connect(self.__btn1)
         self.wyszukiwarka.textEdited.connect(self.__wyszukaj)
         self.button2.clicked.connect(self.__wypisz)
+        self.button3.clicked.connect(self.suwak1())
+    def __daily(self):
+        daily = dict()
+        for key in self.countries_data.keys():
+            daily[key] = self.__lista_roznic(self.countries_data[key])
+        return daily
+
+    def __lista_roznic(self, lista):
+        listab = list()
+        for i in range(len(lista)):
+            if i == 0:
+                listab.append(0)
+            else:
+                listab.append(lista[i]-lista[i-1])
+        return listab
+
+    def suwak1(self):
+        return lambda _: self.display_data(self.countries_data)
+
+    def display_data(self, countries_data):
+        print(self.lista_wybranych_krajow)
+        for country in self.lista_wybranych_krajow:
+            X = np.arange(0, len(countries_data[country]), 1)
+            plt.semilogy(X, self.countries_data[country], label=country)
+            print(country)
+            print(countries_data[country])
+            print(len(countries_data[country]))
+
+        plt.xlabel("Days (subsequent data)")
+        plt.ylabel("Total number of patients")
+        plt.title("Covid-19 number of patients since 01.01.2020")
+        plt.grid()
+        plt.legend(loc="lower right")
+        # plt.tight_layout()
+        plt.show()
 
     def __btn1(self):
         file = WczytajPlik()
         self.error_change(file.blad)
         self.countries_data = file.get_countries_data()
+        self.countries_data_daily = self.__daily()
+        print(len(self.countries_data_daily["Argentina"]))
+        print(len(self.countries_data["Argentina"]))
+        # print(self.countries_data)
         if self.countries_data:
             self.panstwa = PointsTab(list(self.countries_data.keys()), self)
             self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
@@ -111,6 +152,8 @@ class Przyciski(QWidget):
         self.wyszukiwarka.clear()
 
     def __wypisz(self):
+        # self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
+        # print(self.countries_data)
         print(self.lista_wybranych_krajow)
 
 
@@ -208,18 +251,22 @@ class PointsTab(QScrollArea):
                 if len(self.lista_wybranych) >= 6:
                     raise LimitPanstw
                 else:
-                    btn.setStyleSheet("background-color : lightgreen")
                     self.lista_wybranych.append(name)
+                    self.cos.lista_wybranych_krajow = self.get_lista_wybranych()
+                    print(self.lista_wybranych)
                     self.blad = None
                     self.cos.error_change(self.blad)
+                    btn.setStyleSheet("background-color : lightgreen")
             except LimitPanstw as err:
                 self.blad = str(err)
                 self.cos.error_change(self.blad)
         else:
-            btn.setStyleSheet("background-color : ")
             self.lista_wybranych.remove(name)
+            self.cos.lista_wybranych_krajow = self.get_lista_wybranych()
+            print(self.lista_wybranych)
             self.blad = None
             self.cos.error_change(self.blad)
+            btn.setStyleSheet("background-color : ")
         # print(self.lista_wybranych)
 
     def get_lista_wybranych(self):
