@@ -122,13 +122,14 @@ class Przyciski(QWidget):
         file = WczytajPlik()
         self.error_change(file.blad)
         self.countries_data = file.get_countries_data()
-        self.countries_data_daily = self.__daily()
-        print(len(self.countries_data_daily["Argentina"]))
-        print(len(self.countries_data["Argentina"]))
-        # print(self.countries_data)
         if self.countries_data:
-            self.panstwa = PointsTab(list(self.countries_data.keys()), self)
-            self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
+            self.countries_data_daily = self.__daily()
+            print(len(self.countries_data_daily["Argentina"]))
+            print(len(self.countries_data["Argentina"]))
+            # print(self.countries_data)
+            if self.countries_data:
+                self.panstwa = PointsTab(list(self.countries_data.keys()), self)
+                self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
         if error:

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QFileDialog
 
-from exceptions import ZlyFormatPliku
+from exceptions import ZlyFormatPliku, BrakPliku
 
 
 class WczytajPlik(QFileDialog):
@@ -8,7 +8,7 @@ class WczytajPlik(QFileDialog):
         super().__init__()
         self.blad = None
         filename = self.__open_file()
-        self.__test_filename(filename)
+        #self.__test_filename(filename)
 
     def get_countries_data(self):
         return self.countries_data
@@ -17,13 +17,19 @@ class WczytajPlik(QFileDialog):
         try:
             filename = QFileDialog.getOpenFileName()[0]
             if filename.split(".")[-1] != "csv":
+                if filename == '':
+                    raise BrakPliku
                 raise ZlyFormatPliku
             self.countries_data = self.__load_data(filename)
+            return filename
         except ZlyFormatPliku as err:
             self.blad = str(err)
             self.countries_data = None
+        except BrakPliku as err:
+            self.blad = str(err)
+            self.countries_data = None
 
-        return filename
+
 
     def __test_filename(self, filename):
         print(filename)
