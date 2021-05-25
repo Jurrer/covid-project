@@ -113,7 +113,7 @@ class Przyciski(QWidget):
         plt.title("Covid-19 number of patients since 01.01.2020")
         plt.grid()
         plt.legend(loc="lower right")
-        # plt.tight_layout()
+        plt.tight_layout()
         plt.show()
 
     def __btn1(self):
