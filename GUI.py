@@ -81,6 +81,8 @@ class Przyciski(QWidget):
         self.wyszukiwarka.textEdited.connect(self.__wyszukaj)
         self.button2.clicked.connect(self.__wypisz)
         self.button3.clicked.connect(self.suwak1())
+
+
     def __daily(self):
         daily = dict()
         for key in self.countries_data.keys():
@@ -113,7 +115,7 @@ class Przyciski(QWidget):
         plt.title("Covid-19 number of patients since 01.01.2020")
         plt.grid()
         plt.legend(loc="lower right")
-        plt.tight_layout()
+        #plt.tight_layout()
         plt.show()
 
     def __btn1(self):
