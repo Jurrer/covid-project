@@ -86,8 +86,19 @@ class Przyciski(QWidget):
         self.__button2.clicked.connect(self.__wypisz)
         self.__button3.clicked.connect(lambda _: print(self.__daily_or_total))
         self.__button6.clicked.connect(self.__change_DOT())
+        self.__button5.clicked.connect(self.__aktualizuj_okno)
+
+    def __aktualizuj_okno(self):
+        self.__lista_wybranych_krajow.clear()
+        self.make_graph()
+        self.__panstwa.usun_wszystko()
+        self.error_change(None)
+        self.__wyszukiwarka.setText("Szukaj...")
+
+
     def set_lista_wybranych_krajow(self, arg):
         self.__lista_wybranych_krajow = arg
+
     def __init_POC(self):
         if self.__tab_name == "Zachorowania":
             patients_or_cured = "patients"
@@ -120,9 +131,8 @@ class Przyciski(QWidget):
         self.error_change(file.blad)
         self.__countries_data = file.get_countries_data()
         if self.__countries_data:
-            if self.__countries_data:
-                self.__panstwa = PointsTab(list(self.__countries_data.keys()), self)
-                self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
+            self.__panstwa = PointsTab(list(self.__countries_data.keys()), self)
+            self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
         if error:
@@ -143,9 +153,6 @@ class Przyciski(QWidget):
             self.__panstwa.search_by_letter(self.__panstwo)
         else:
             self.__panstwa.search(self.__panstwo)
-
-    def __usun(self):
-        self.__wyszukiwarka.clear()
 
     def __wypisz(self):
         print(self.__lista_wybranych_krajow)
@@ -223,7 +230,7 @@ class PointsTab(QScrollArea):
             btn.setStyleSheet("background-color : ")
 
     def reset(self):
-        self.__init_view(self.names)
+        self.__init_view(self.__names)
 
     def __choose_country(self, btn, name):
         return lambda _: self.__ogarnij_wybieranie(btn, name)
@@ -253,3 +260,7 @@ class PointsTab(QScrollArea):
 
     def get_lista_wybranych(self):
         return self.__lista_wybranych
+
+    def usun_wszystko(self):
+        self.__names = []
+        self.__init_view(self.__names)
