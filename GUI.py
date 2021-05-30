@@ -3,7 +3,7 @@ from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
     QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
 import numpy as np
-
+from Wykres import Wykres
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
 from matplotlib import pyplot as plt
@@ -39,154 +39,150 @@ class TabsWidget(QWidget):
         # self.__tab1 = TabInside()
         # self.__tab2 = TabInside()
 
-        self.__tabs.addTab(Przyciski(), "Zachorowania")
-        self.__tabs.addTab(Przyciski(), "Ozdrowienia")
+        self.__tabs.addTab(Przyciski("Zachorowania"), "Zachorowania")
+        self.__tabs.addTab(Przyciski("Ozdrowienia"), "Ozdrowienia")
 
         layout.addWidget(self.__tabs)
         self.setLayout(layout)
 
 
 class Przyciski(QWidget):
-    def __init__(self):
+    def __init__(self, tab_name):
         super().__init__()
-        self.layout = QGridLayout()
-        self.countries_data = dict()
-        self.panstwa = PointsTab([], self)
-        self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
-        self.wyszukiwarka = QLineEdit("Szukaj...")
-        self.bledy = QLineEdit("Chwilowo brak błędu...")
-        self.bledy.setStyleSheet("background-color: whitesmoke;")
-        QLineEdit.setReadOnly(self.bledy, True)
-        self.bledy.setAlignment(QtCore.Qt.AlignCenter)
-        self.button1 = QPushButton("wczytaj plik")
-        self.button2 = QPushButton("tutaj bedzie suwak")
-        self.button3 = QPushButton("tutaj bedzie drugi suwak")
-        self.button4 = QPushButton("eksportuj do pdf")
-        self.button5 = QPushButton("resetuj")
-        # self.button6 = QPushButton("dziennie/calkowicie")
-        self.wykres = QLabel()
-        self.layout.addWidget(self.wykres, 1, 0, 7, 4)
-        self.layout.addWidget(self.bledy, 0, 0, 1, 2)
-        self.layout.addWidget(self.wyszukiwarka, 0, 4, 1, 2)
-        self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
-        self.layout.addWidget(self.button1, 3, 4, 1, 2)
-        self.layout.addWidget(self.button2, 4, 4, 1, 2)
-        self.layout.addWidget(self.button3, 5, 4, 1, 2)
-        self.layout.addWidget(self.button4, 6, 4, 1, 2)
-        self.layout.addWidget(self.button5, 7, 4, 1, 2)
-        # self.layout.addWidget(self.button6, 8, 4, 1, 2)
+        self.__tab_name = tab_name
+        self.__daily_or_total = "total"
+        self.__layout = QGridLayout()
+        self.__patients_or_cured = self.__init_POC()
+        self.__countries_data = dict()
+        self.__panstwa = PointsTab([], self)
+        self.__lista_wybranych_krajow = self.__panstwa.get_lista_wybranych()
+        self.__wyszukiwarka = QLineEdit("Szukaj...")
+        self.__bledy = QLineEdit("Chwilowo brak błędu...")
+        self.__bledy.setStyleSheet("background-color: whitesmoke;")
+        QLineEdit.setReadOnly(self.__bledy, True)
+        self.__bledy.setAlignment(QtCore.Qt.AlignCenter)
+        self.__button1 = QPushButton("wczytaj plik")
+        self.__button2 = QPushButton("tutaj bedzie suwak")
+        self.__button3 = QPushButton("tutaj bedzie drugi suwak")
+        self.__button4 = QPushButton("eksportuj do pdf")
+        self.__button5 = QPushButton("resetuj")
+        self.__button6 = QPushButton("dziennie/(CAŁKOWICIE)")
+        self.__wykres = Wykres(self.__countries_data, self.__lista_wybranych_krajow, self.__daily_or_total,
+                               self.__patients_or_cured)
+        self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
+        self.__layout.addWidget(self.__bledy, 0, 0, 1, 2)
+        self.__layout.addWidget(self.__wyszukiwarka, 0, 4, 1, 2)
+        self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
+        self.__layout.addWidget(self.__button1, 3, 4, 1, 2)
+        self.__layout.addWidget(self.__button2, 4, 4, 1, 2)
+        self.__layout.addWidget(self.__button3, 5, 4, 1, 2)
+        self.__layout.addWidget(self.__button4, 6, 4, 1, 2)
+        self.__layout.addWidget(self.__button5, 7, 4, 1, 2)
+        self.__layout.addWidget(self.__button6, 8, 4, 1, 2)
 
-        self.setLayout(self.layout)
-        self.button1.clicked.connect(self.__btn1)
-        self.wyszukiwarka.textEdited.connect(self.__wyszukaj)
-        self.button2.clicked.connect(self.__wypisz)
-        self.button3.clicked.connect(self.suwak1())
+        self.setLayout(self.__layout)
+        self.__button1.clicked.connect(self.__btn1)
+        self.__wyszukiwarka.textEdited.connect(self.__wyszukaj)
+        self.__button2.clicked.connect(self.__wypisz)
+        self.__button3.clicked.connect(lambda _: print(self.__daily_or_total))
+        self.__button6.clicked.connect(self.__change_DOT())
+    def set_lista_wybranych_krajow(self, arg):
+        self.__lista_wybranych_krajow = arg
+    def __init_POC(self):
+        if self.__tab_name == "Zachorowania":
+            patients_or_cured = "patients"
+        elif self.__tab_name == "Ozdrowienia":
+            patients_or_cured = "cured"
+        return patients_or_cured
 
+    def __change_DOT(self):
+        return lambda _: self.__changedot()
 
-    def __daily(self):
-        daily = dict()
-        for key in self.countries_data.keys():
-            daily[key] = self.__lista_roznic(self.countries_data[key])
-        return daily
+    def __changedot(self):
+        if self.__daily_or_total == "total":
+            self.__daily_or_total = "daily"
+            self.__button6.setText("(DZIENNIE)/calkowicie")
+            self.make_graph()
+        elif self.__daily_or_total == "daily":
+            self.__daily_or_total = "total"
+            self.__button6.setText("dziennie/(CAŁKOWICIE)")
 
-    def __lista_roznic(self, lista):
-        listab = list()
-        for i in range(len(lista)):
-            if i == 0:
-                listab.append(0)
-            else:
-                listab.append(lista[i]-lista[i-1])
-        return listab
+            self.make_graph()
 
-    def suwak1(self):
-        return lambda _: self.display_data(self.countries_data)
-
-    def display_data(self, countries_data):
-        print(self.lista_wybranych_krajow)
-        for country in self.lista_wybranych_krajow:
-            X = np.arange(0, len(countries_data[country]), 1)
-            plt.semilogy(X, self.countries_data[country], label=country)
-            print(country)
-            print(countries_data[country])
-            print(len(countries_data[country]))
-
-        plt.xlabel("Days (subsequent data)")
-        plt.ylabel("Total number of patients")
-        plt.title("Covid-19 number of patients since 01.01.2020")
-        plt.grid()
-        plt.legend(loc="lower right")
-        #plt.tight_layout()
-        plt.show()
+    def make_graph(self):
+        self.__wykres = Wykres(self.__countries_data, self.__lista_wybranych_krajow, self.__daily_or_total,
+                               self.__patients_or_cured)
+        self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
+        self.setLayout(self.__layout)
 
     def __btn1(self):
         file = WczytajPlik()
         self.error_change(file.blad)
-        self.countries_data = file.get_countries_data()
-        if self.countries_data:
-            self.countries_data_daily = self.__daily()
-            print(len(self.countries_data_daily["Argentina"]))
-            print(len(self.countries_data["Argentina"]))
-            # print(self.countries_data)
-            if self.countries_data:
-                self.panstwa = PointsTab(list(self.countries_data.keys()), self)
-                self.layout.addWidget(self.panstwa, 1, 4, 2, 2)
+        self.__countries_data = file.get_countries_data()
+        if self.__countries_data:
+            if self.__countries_data:
+                self.__panstwa = PointsTab(list(self.__countries_data.keys()), self)
+                self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
 
     def error_change(self, error):
         if error:
-            self.bledy.setStyleSheet("background-color: tomato;")
-            self.bledy.clear()
-            self.bledy.setText(error)
+            self.__bledy.setStyleSheet("background-color: tomato;")
+            self.__bledy.clear()
+            self.__bledy.setText(error)
         else:
-            self.bledy.setStyleSheet("background-color: whitesmoke;")
-            self.bledy.clear()
-            self.bledy.setText("Chwilowo brak błędu...")
+            self.__bledy.setStyleSheet("background-color: whitesmoke;")
+            self.__bledy.clear()
+            self.__bledy.setText("Chwilowo brak błędu...")
 
     def __wyszukaj(self):
-        self.panstwo = self.wyszukiwarka.text()
-        print(self.panstwo)
-        if not self.panstwo:
-            self.panstwa.reset()
-        elif len(self.panstwo) == 1:
-            self.panstwa.search_by_letter(self.panstwo)
+        self.__panstwo = self.__wyszukiwarka.text()
+        print(self.__panstwo)
+        if not self.__panstwo:
+            self.__panstwa.reset()
+        elif len(self.__panstwo) == 1:
+            self.__panstwa.search_by_letter(self.__panstwo)
         else:
-            self.panstwa.search(self.panstwo)
+            self.__panstwa.search(self.__panstwo)
 
     def __usun(self):
-        self.wyszukiwarka.clear()
+        self.__wyszukiwarka.clear()
 
     def __wypisz(self):
-        # self.lista_wybranych_krajow = self.panstwa.get_lista_wybranych()
-        # print(self.countries_data)
-        print(self.lista_wybranych_krajow)
+        print(self.__lista_wybranych_krajow)
 
 
 class PointsTab(QScrollArea):
-    def __init__(self, names, cos: Przyciski):
+    def __init__(self, names, przyciski: Przyciski):
         super().__init__()
-        self.names = names
-        self.lista_wybranych = list()
+        self.__names = names
+        self.__lista_wybranych = list()
         self.__init_view(names)
         self.blad = None
-        self.cos = cos
+        self.przyciski = przyciski
 
     def search(self, name):
         self.__change_view(name)
+
+    def __make_button(self, name, btn_layout):
+        btnname = name
+        btn = QPushButton(btnname)
+        btn.clicked.connect(self.__choose_country(btn, btnname))
+        self.__ustaw_kolory(btn, btnname)
+        btn_layout.addRow(btn)
+
+    def __add_buttons_to_layout(self, btn_group, btn_layout):
+        btn_group.setLayout(btn_layout)
+        self.setWidget(btn_group)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.setWidgetResizable(True)
 
     def __init_view(self, names):
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
 
         for name in names:
-            btnname = name
-            btn = QPushButton(btnname)
-            btn.clicked.connect(self.__choose_country(btn, btnname))
-            self.__ustaw_kolory(btn, btnname)
-            btn_layout.addRow(btn)
-
-        btn_group.setLayout(btn_layout)
-        self.setWidget(btn_group)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.setWidgetResizable(True)
+            self.__make_button(name, btn_layout)
+        self.__add_buttons_to_layout(btn_group, btn_layout)
 
     def __change_view(self, country):
         btn_layout = QFormLayout()
@@ -195,7 +191,7 @@ class PointsTab(QScrollArea):
 
         tmp = 0
 
-        for name in self.names:
+        for name in self.__names:
             name_copy = name.upper()
             if len(name) >= len(country):
                 for i in range(len(country)):
@@ -205,39 +201,23 @@ class PointsTab(QScrollArea):
                         tmp = 0
                         break
                 if tmp != 0:
-                    btnname = name
-                    btn = QPushButton(btnname)
-                    btn.clicked.connect(self.__choose_country(btn, btnname))
-                    self.__ustaw_kolory(btn, btnname)
-                    btn_layout.addRow(btn)
+                    self.__make_button(name, btn_layout)
 
-        btn_group.setLayout(btn_layout)
-        self.setWidget(btn_group)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.setWidgetResizable(True)
+        self.__add_buttons_to_layout(btn_group, btn_layout)
 
     def search_by_letter(self, letter):
         letter = letter.upper()
-        # print(letter)
-        names = self.names
+        names = self.__names
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
 
         for name in names:
             if name[0] == letter:
-                btnname = name
-                btn = QPushButton(btnname)
-                btn.clicked.connect(self.__choose_country(btn, btnname))
-                self.__ustaw_kolory(btn, btnname)
-                btn_layout.addRow(btn)
-
-        btn_group.setLayout(btn_layout)
-        self.setWidget(btn_group)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        self.setWidgetResizable(True)
+                self.__make_button(name, btn_layout)
+        self.__add_buttons_to_layout(btn_group, btn_layout)
 
     def __ustaw_kolory(self, btn, btnname):
-        if btnname in self.lista_wybranych:
+        if btnname in self.__lista_wybranych:
             btn.setStyleSheet("background-color : lightgreen")
         else:
             btn.setStyleSheet("background-color : ")
@@ -249,28 +229,27 @@ class PointsTab(QScrollArea):
         return lambda _: self.__ogarnij_wybieranie(btn, name)
 
     def __ogarnij_wybieranie(self, btn, name):
-        if name not in self.lista_wybranych:
+        if name not in self.__lista_wybranych:
             try:
-                if len(self.lista_wybranych) >= 6:
+                if len(self.__lista_wybranych) >= 6:
                     raise LimitPanstw
                 else:
-                    self.lista_wybranych.append(name)
-                    self.cos.lista_wybranych_krajow = self.get_lista_wybranych()
-                    print(self.lista_wybranych)
+                    self.__lista_wybranych.append(name)
+                    self.przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+                    self.przyciski.make_graph()
                     self.blad = None
-                    self.cos.error_change(self.blad)
+                    self.przyciski.error_change(self.blad)
                     btn.setStyleSheet("background-color : lightgreen")
             except LimitPanstw as err:
                 self.blad = str(err)
-                self.cos.error_change(self.blad)
+                self.przyciski.error_change(self.blad)
         else:
-            self.lista_wybranych.remove(name)
-            self.cos.lista_wybranych_krajow = self.get_lista_wybranych()
-            print(self.lista_wybranych)
+            self.__lista_wybranych.remove(name)
+            self.przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+            self.przyciski.make_graph()
             self.blad = None
-            self.cos.error_change(self.blad)
+            self.przyciski.error_change(self.blad)
             btn.setStyleSheet("background-color : ")
-        # print(self.lista_wybranych)
 
     def get_lista_wybranych(self):
-        return self.lista_wybranych
+        return self.__lista_wybranych

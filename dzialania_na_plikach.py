@@ -50,7 +50,6 @@ class WczytajPlik(QFileDialog):
 
         return countries_data
 
-
     def __sumuj_przebiegi(self, names, values):
         data = dict()
         iterator = 1
