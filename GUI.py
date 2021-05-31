@@ -133,7 +133,7 @@ class Przyciski(QWidget):
         self.error_change(file.blad)
         self.__countries_data = file.get_countries_data()
         if self.__countries_data:
-            self.__countries = PointsTab(list(self.__countries_data.keys()), self)
+            self.__countries = PointsTab(list(self.__countries_data.keys())[1:], self)
             self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
 
     def error_change(self, error):
