@@ -15,7 +15,7 @@ class Okno(QMainWindow):
     def __prepare_window(self, width, height):
         self.setWindowTitle("CovidPlots")
         self.__set_window_in_center(width, height)
-        self.__tabs_widget = TabsWidget(self, width, height)
+        self.__tabs_widget = Zakladki(self, width, height)
         self.setCentralWidget(self.__tabs_widget)
         self.show()
 
@@ -27,8 +27,7 @@ class Okno(QMainWindow):
         self.move(top_left)
 
 
-class TabsWidget(QWidget):
-
+class Zakladki(QWidget):
     def __init__(self, parent, width, height):
         super().__init__(parent)
         layout = QGridLayout()
@@ -49,52 +48,56 @@ class Przyciski(QWidget):
         self.__daily_or_total = "total"
         self.__layout = QGridLayout()
         self.__patients_or_cured = self.__init_POC()
+        self.__errors_label = self.__init_errors_label()
         self.__countries_data = dict()
-        self.__panstwa = PointsTab([], self)
-        self.__lista_wybranych_krajow = self.__panstwa.get_lista_wybranych()
-        self.__wyszukiwarka = QLineEdit()
-        self.__wyszukiwarka.setPlaceholderText("Search...")
-        self.__bledy = QLineEdit("Chwilowo brak błędu...")
-        self.__bledy.setStyleSheet("background-color: whitesmoke;")
-        QLineEdit.setReadOnly(self.__bledy, True)
-        self.__bledy.setAlignment(QtCore.Qt.AlignCenter)
-        self.__button1 = QPushButton("wczytaj plik")
-        self.__button2 = QPushButton("tutaj bedzie suwak")
-        self.__button3 = QPushButton("tutaj bedzie drugi suwak")
-        self.__button4 = QPushButton("eksportuj do pdf")
-        self.__button5 = QPushButton("resetuj")
-        self.__button6 = QPushButton("dziennie/(CAŁKOWICIE)")
-        self.__wykres = Wykres(self.__countries_data, self.__lista_wybranych_krajow, self.__daily_or_total,
-                               self.__patients_or_cured)
-        self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
-        self.__layout.addWidget(self.__bledy, 0, 0, 1, 2)
-        self.__layout.addWidget(self.__wyszukiwarka, 0, 4, 1, 2)
-        self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
-        self.__layout.addWidget(self.__button1, 3, 4, 1, 2)
-        self.__layout.addWidget(self.__button2, 4, 4, 1, 2)
-        self.__layout.addWidget(self.__button3, 5, 4, 1, 2)
-        self.__layout.addWidget(self.__button4, 6, 4, 1, 2)
-        self.__layout.addWidget(self.__button5, 7, 4, 1, 2)
-        self.__layout.addWidget(self.__button6, 8, 4, 1, 2)
-
-        self.setLayout(self.__layout)
-        self.__button1.clicked.connect(self.__btn1)
-        self.__wyszukiwarka.textEdited.connect(self.__wyszukaj)
-        self.__button2.clicked.connect(self.__wypisz)
-        self.__button3.clicked.connect(lambda _: print(self.__daily_or_total))
-        self.__button6.clicked.connect(self.__change_DOT())
-        self.__button5.clicked.connect(self.__wyczysc_okno)
-
-    def __wyczysc_okno(self):
-        self.__lista_wybranych_krajow.clear()
+        self.__countries = PointsTab([], self)
+        self.__choosed_countries = self.__countries.get_choosed_countries_list()
+        self.__searcher = QLineEdit()
+        self.__searcher.setPlaceholderText("Szukaj...")
+        self.__button_load_file = QPushButton("wczytaj plik")
+        self.__first_slider = QPushButton("tutaj bedzie suwak") #todo
+        self.__second_slider = QPushButton("tutaj bedzie drugi suwak") #todo
+        self.__button_export_to_pdf = QPushButton("eksportuj do pdf") #todo
+        self.__button_reset = QPushButton("resetuj")
+        self.__button_daily_total = QPushButton("dziennie/(CAŁKOWICIE)")
         self.make_graph()
-        self.__panstwa.standard_view()
+        self.__add_buttons_to_layout()
+        self.setLayout(self.__layout)
+
+    def __init_errors_label(self):
+        errors_label = QLineEdit("Chwilowo brak błędu...")
+        errors_label.setStyleSheet("background-color: whitesmoke;")
+        QLineEdit.setReadOnly(errors_label, True)
+        errors_label.setAlignment(QtCore.Qt.AlignCenter)
+        return errors_label
+
+    def __add_buttons_to_layout(self):
+        self.__layout.addWidget(self.__errors_label, 0, 0, 1, 2)
+        self.__layout.addWidget(self.__searcher, 0, 4, 1, 2)
+        self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
+        self.__layout.addWidget(self.__button_load_file, 3, 4, 1, 2)
+        self.__layout.addWidget(self.__first_slider, 4, 4, 1, 2)
+        self.__layout.addWidget(self.__second_slider, 5, 4, 1, 2)
+        self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
+        self.__layout.addWidget(self.__button_reset, 7, 4, 1, 2)
+        self.__layout.addWidget(self.__button_daily_total, 8, 4, 1, 2)
+        self.__button_load_file.clicked.connect(self.__btn1)
+        self.__searcher.textEdited.connect(self.__wyszukaj)
+        self.__first_slider.clicked.connect(self.__wypisz) #todo
+        self.__second_slider.clicked.connect(lambda _: print(self.__daily_or_total)) #todo
+        self.__button_daily_total.clicked.connect(self.__change_DOT())
+        self.__button_reset.clicked.connect(self.__clear_window)
+
+    def __clear_window(self):
+        self.__choosed_countries.clear()
+        self.make_graph()
+        self.__countries.reset()
         self.error_change(None)
-        self.__wyszukiwarka.setText("")
+        self.__searcher.setText("")
 
 
-    def set_lista_wybranych_krajow(self, arg):
-        self.__lista_wybranych_krajow = arg
+    def set_choosed_countries(self, arg):
+        self.__choosed_countries = arg
 
     def __init_POC(self):
         if self.__tab_name == "Zachorowania":
@@ -102,7 +105,7 @@ class Przyciski(QWidget):
         elif self.__tab_name == "Ozdrowienia":
             patients_or_cured = "cured"
         else:
-            pass
+            patients_or_cured = "patients/cured"
         return patients_or_cured
 
     def __change_DOT(self):
@@ -111,17 +114,17 @@ class Przyciski(QWidget):
     def __changedot(self):
         if self.__daily_or_total == "total":
             self.__daily_or_total = "daily"
-            self.__button6.setText("(DZIENNIE)/calkowicie")
+            self.__button_daily_total.setText("(DZIENNIE)/calkowicie")
             self.make_graph()
         elif self.__daily_or_total == "daily":
             self.__daily_or_total = "total"
-            self.__button6.setText("dziennie/(CAŁKOWICIE)")
+            self.__button_daily_total.setText("dziennie/(CAŁKOWICIE)")
             self.make_graph()
         else:
             pass
 
     def make_graph(self):
-        self.__wykres = Wykres(self.__countries_data, self.__lista_wybranych_krajow, self.__daily_or_total,
+        self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
                                self.__patients_or_cured)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
 
@@ -130,30 +133,30 @@ class Przyciski(QWidget):
         self.error_change(file.blad)
         self.__countries_data = file.get_countries_data()
         if self.__countries_data:
-            self.__panstwa = PointsTab(list(self.__countries_data.keys()), self)
-            self.__layout.addWidget(self.__panstwa, 1, 4, 2, 2)
+            self.__countries = PointsTab(list(self.__countries_data.keys()), self)
+            self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
 
     def error_change(self, error):
         if error:
-            self.__bledy.setStyleSheet("background-color: tomato;")
-            self.__bledy.clear()
-            self.__bledy.setText(error)
+            self.__errors_label.setStyleSheet("background-color: tomato;")
+            self.__errors_label.clear()
+            self.__errors_label.setText(error)
         else:
-            self.__bledy.setStyleSheet("background-color: whitesmoke;")
-            self.__bledy.clear()
-            self.__bledy.setText("Chwilowo brak błędu...")
+            self.__errors_label.setStyleSheet("background-color: whitesmoke;")
+            self.__errors_label.clear()
+            self.__errors_label.setText("Chwilowo brak błędu...")
 
     def __wyszukaj(self):
-        self.__panstwo = self.__wyszukiwarka.text()
+        self.__panstwo = self.__searcher.text()
         if not self.__panstwo:
-            self.__panstwa.reset()
+            self.__countries.reset()
         elif len(self.__panstwo) == 1:
-            self.__panstwa.search_by_letter(self.__panstwo)
+            self.__countries.search_by_letter(self.__panstwo)
         else:
-            self.__panstwa.search(self.__panstwo)
+            self.__countries.search(self.__panstwo)
 
     def __wypisz(self):
-        print(self.__lista_wybranych_krajow)
+        print(self.__choosed_countries)
 
 
 class PointsTab(QScrollArea):
@@ -168,10 +171,10 @@ class PointsTab(QScrollArea):
     def search(self, name):
         self.__change_view(name)
 
-    def get_lista_wybranych(self):
+    def get_choosed_countries_list(self):
         return self.__lista_wybranych
 
-    def standard_view(self):
+    def reset(self):
         self.__init_view(self.__names)
 
     def __make_button(self, name, btn_layout):
@@ -230,8 +233,6 @@ class PointsTab(QScrollArea):
         else:
             btn.setStyleSheet("background-color : ")
 
-    def reset(self):
-        self.__init_view(self.__names)
 
     def __choose_country(self, btn, name):
         return lambda _: self.__ogarnij_wybieranie(btn, name)
@@ -243,7 +244,7 @@ class PointsTab(QScrollArea):
                     raise LimitPanstw
                 else:
                     self.__lista_wybranych.append(name)
-                    self.__przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+                    self.__przyciski.set_choosed_countries(self.get_choosed_countries_list())
                     self.__przyciski.make_graph()
                     self.__blad = None
                     self.__przyciski.error_change(self.__blad)
@@ -253,7 +254,7 @@ class PointsTab(QScrollArea):
                 self.__przyciski.error_change(self.__blad)
         else:
             self.__lista_wybranych.remove(name)
-            self.__przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+            self.__przyciski.set_choosed_countries(self.get_choosed_countries_list())
             self.__przyciski.make_graph()
             self.__blad = None
             self.__przyciski.error_change(self.__blad)
