@@ -1,12 +1,10 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QVBoxLayout, QTabWidget, QPushButton, \
-    QGridLayout, QLineEdit, QLabel, QFormLayout, QGroupBox, QScrollArea
-import numpy as np
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QTabWidget, QPushButton, \
+    QGridLayout, QLineEdit, QFormLayout, QGroupBox, QScrollArea
 from Wykres import Wykres
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
-from matplotlib import pyplot as plt
 
 
 class Okno(QMainWindow):
@@ -36,8 +34,6 @@ class TabsWidget(QWidget):
         layout = QGridLayout()
         self.__tabs = QTabWidget()
         self.__tabs.resize(width, height)
-        # self.__tab1 = TabInside()
-        # self.__tab2 = TabInside()
 
         self.__tabs.addTab(Przyciski("Zachorowania"), "Zachorowania")
         self.__tabs.addTab(Przyciski("Ozdrowienia"), "Ozdrowienia")
@@ -56,7 +52,8 @@ class Przyciski(QWidget):
         self.__countries_data = dict()
         self.__panstwa = PointsTab([], self)
         self.__lista_wybranych_krajow = self.__panstwa.get_lista_wybranych()
-        self.__wyszukiwarka = QLineEdit("Szukaj...")
+        self.__wyszukiwarka = QLineEdit()
+        self.__wyszukiwarka.setPlaceholderText("Search...")
         self.__bledy = QLineEdit("Chwilowo brak błędu...")
         self.__bledy.setStyleSheet("background-color: whitesmoke;")
         QLineEdit.setReadOnly(self.__bledy, True)
@@ -86,14 +83,14 @@ class Przyciski(QWidget):
         self.__button2.clicked.connect(self.__wypisz)
         self.__button3.clicked.connect(lambda _: print(self.__daily_or_total))
         self.__button6.clicked.connect(self.__change_DOT())
-        self.__button5.clicked.connect(self.__aktualizuj_okno)
+        self.__button5.clicked.connect(self.__wyczysc_okno)
 
-    def __aktualizuj_okno(self):
+    def __wyczysc_okno(self):
         self.__lista_wybranych_krajow.clear()
         self.make_graph()
-        self.__panstwa.usun_wszystko()
+        self.__panstwa.standard_view()
         self.error_change(None)
-        self.__wyszukiwarka.setText("Szukaj...")
+        self.__wyszukiwarka.setText("")
 
 
     def set_lista_wybranych_krajow(self, arg):
@@ -104,6 +101,8 @@ class Przyciski(QWidget):
             patients_or_cured = "patients"
         elif self.__tab_name == "Ozdrowienia":
             patients_or_cured = "cured"
+        else:
+            pass
         return patients_or_cured
 
     def __change_DOT(self):
@@ -117,14 +116,14 @@ class Przyciski(QWidget):
         elif self.__daily_or_total == "daily":
             self.__daily_or_total = "total"
             self.__button6.setText("dziennie/(CAŁKOWICIE)")
-
             self.make_graph()
+        else:
+            pass
 
     def make_graph(self):
         self.__wykres = Wykres(self.__countries_data, self.__lista_wybranych_krajow, self.__daily_or_total,
                                self.__patients_or_cured)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
-        self.setLayout(self.__layout)
 
     def __btn1(self):
         file = WczytajPlik()
@@ -146,7 +145,6 @@ class Przyciski(QWidget):
 
     def __wyszukaj(self):
         self.__panstwo = self.__wyszukiwarka.text()
-        print(self.__panstwo)
         if not self.__panstwo:
             self.__panstwa.reset()
         elif len(self.__panstwo) == 1:
@@ -164,11 +162,17 @@ class PointsTab(QScrollArea):
         self.__names = names
         self.__lista_wybranych = list()
         self.__init_view(names)
-        self.blad = None
-        self.przyciski = przyciski
+        self.__blad = None
+        self.__przyciski = przyciski
 
     def search(self, name):
         self.__change_view(name)
+
+    def get_lista_wybranych(self):
+        return self.__lista_wybranych
+
+    def standard_view(self):
+        self.__init_view(self.__names)
 
     def __make_button(self, name, btn_layout):
         btnname = name
@@ -195,9 +199,7 @@ class PointsTab(QScrollArea):
         btn_layout = QFormLayout()
         btn_group = QGroupBox()
         country = country.upper()
-
         tmp = 0
-
         for name in self.__names:
             name_copy = name.upper()
             if len(name) >= len(country):
@@ -209,7 +211,6 @@ class PointsTab(QScrollArea):
                         break
                 if tmp != 0:
                     self.__make_button(name, btn_layout)
-
         self.__add_buttons_to_layout(btn_group, btn_layout)
 
     def search_by_letter(self, letter):
@@ -242,25 +243,19 @@ class PointsTab(QScrollArea):
                     raise LimitPanstw
                 else:
                     self.__lista_wybranych.append(name)
-                    self.przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
-                    self.przyciski.make_graph()
-                    self.blad = None
-                    self.przyciski.error_change(self.blad)
+                    self.__przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+                    self.__przyciski.make_graph()
+                    self.__blad = None
+                    self.__przyciski.error_change(self.__blad)
                     btn.setStyleSheet("background-color : lightgreen")
             except LimitPanstw as err:
-                self.blad = str(err)
-                self.przyciski.error_change(self.blad)
+                self.__blad = str(err)
+                self.__przyciski.error_change(self.__blad)
         else:
             self.__lista_wybranych.remove(name)
-            self.przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
-            self.przyciski.make_graph()
-            self.blad = None
-            self.przyciski.error_change(self.blad)
+            self.__przyciski.set_lista_wybranych_krajow(self.get_lista_wybranych())
+            self.__przyciski.make_graph()
+            self.__blad = None
+            self.__przyciski.error_change(self.__blad)
             btn.setStyleSheet("background-color : ")
 
-    def get_lista_wybranych(self):
-        return self.__lista_wybranych
-
-    def usun_wszystko(self):
-        self.__names = []
-        self.__init_view(self.__names)

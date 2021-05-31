@@ -49,14 +49,12 @@ class Wykres(FigureCanvasQTAgg):
 
                 graph.set_xlabel("Days (subsequent data)")
                 graph.set_ylabel(f"Total number of {self.__patients_or_cured}")
-                # graph.title(f"Covid-19 number of {self.__patients_or_cured} since 22.01.2020")
                 graph.grid()
                 graph.legend(loc="best")
         else:
             graph.plot()
             graph.set_xlabel("Days (subsequent data)")
             graph.set_ylabel("Total number of patients")
-            # graph.title("Covid-19 number of patients/cured since 22.01.2020")
             graph.grid()
 
     def __daily(self, countries_data):
