@@ -36,10 +36,11 @@ class Wykres(FigureCanvasQTAgg):
         graph.grid()
         if self.__countries_data and self.__countries_list:
             ile_miesiecy = len(self.__countries_data["Poland"])/30
-            odstep_miedzy_punktami_x = len(self.__countries_data["Poland"])/ile_miesiecy  # to powinno być (max - min)/12 (wartosci ze sliderów)
-            graph.xaxis.set_major_locator(MultipleLocator(odstep_miedzy_punktami_x))
-            x = self.__countries_data["Country/Region"]
+            odstep_miedzy_punktami_x = len(self.__countries_data["Poland"])/ile_miesiecy  # to powinno być (max - min)/ile_miesiecy (wartosci ze sliderów)
+            graph.xaxis.set_major_locator(MultipleLocator(odstep_miedzy_punktami_x)) #to coś ustawia wartości na osi x co jakiś odstęp
             graph.tick_params(axis ='x', rotation = 45)
+            x = self.__countries_data["Country/Region"]
+
             if self.__param == "daily":
                 countries_data_daily = self.__daily(self.__countries_data)
                 for country in self.__countries_list:
