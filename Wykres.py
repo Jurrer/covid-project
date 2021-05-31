@@ -2,7 +2,7 @@ from io import BytesIO
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-
+from matplotlib.ticker import MultipleLocator
 
 
 class Wykres(FigureCanvasQTAgg):
@@ -15,7 +15,6 @@ class Wykres(FigureCanvasQTAgg):
         self.__patients_or_cured = patients_or_cured
 
         self.__init_fig()
-
 
     def get_img(self):
         image_data = BytesIO()
@@ -32,34 +31,32 @@ class Wykres(FigureCanvasQTAgg):
 
     def __init_view(self):
         graph = self.__fig.axes[0]
+        graph.set_xlabel("Days (subsequent data)")
+        graph.set_ylabel(f"{self.__param.capitalize()} number of {self.__patients_or_cured}")
+        graph.grid()
         if self.__countries_data and self.__countries_list:
+            ile_miesiecy = len(self.__countries_data["Poland"])/30
+            odstep_miedzy_punktami_x = len(self.__countries_data["Poland"])/ile_miesiecy  # to powinno być (max - min)/12 (wartosci ze sliderów)
+            graph.xaxis.set_major_locator(MultipleLocator(odstep_miedzy_punktami_x))
+            x = self.__countries_data["Country/Region"]
+            graph.tick_params(axis ='x', rotation = 45)
             if self.__param == "daily":
-                counties_data_daily = self.__daily(self.__countries_data)
+                countries_data_daily = self.__daily(self.__countries_data)
                 for country in self.__countries_list:
-                    graph.plot(counties_data_daily[country], label=country)
-
-                graph.set_xlabel("Days (subsequent data)")
-                graph.set_ylabel(f"Daily number of {self.__patients_or_cured}")
-                graph.grid()
+                    graph.plot(x, countries_data_daily[country], label=country)
                 graph.legend(loc="best")
 
             elif self.__param == "total":
                 for country in self.__countries_list:
-                    graph.semilogy(self.__countries_data[country], label=country)
-
-                graph.set_xlabel("Days (subsequent data)")
-                graph.set_ylabel(f"Total number of {self.__patients_or_cured}")
-                graph.grid()
+                    graph.semilogy(x, self.__countries_data[country], label=country)
                 graph.legend(loc="best")
         else:
             graph.plot()
-            graph.set_xlabel("Days (subsequent data)")
-            graph.set_ylabel("Total number of patients")
-            graph.grid()
 
     def __daily(self, countries_data):
         daily = dict()
-        for key in countries_data.keys():
+        keys = list(countries_data.keys())[1:]
+        for key in keys:
             daily[key] = self.__lista_roznic(countries_data[key])
         return daily
 

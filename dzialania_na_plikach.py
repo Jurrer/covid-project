@@ -9,6 +9,10 @@ class WczytajPlik(QFileDialog):
         self.blad = None
         filename = self.__open_file()
         #self.__test_filename(filename)
+        self.__calendar_list = list()
+
+    def get_calendar(self):
+        return self.calendar_list
 
     def get_countries_data(self):
         return self.countries_data
@@ -28,7 +32,6 @@ class WczytajPlik(QFileDialog):
         except BrakPliku as err:
             self.blad = str(err)
             self.countries_data = None
-
 
 
     def __test_filename(self, filename):
@@ -52,6 +55,7 @@ class WczytajPlik(QFileDialog):
 
     def __sumuj_przebiegi(self, names, values):
         data = dict()
+        data[names[0]] = values[0]
         iterator = 1
         country_value = list()
         for name in names[1:]:
