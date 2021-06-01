@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, 
 from Wykres import Wykres
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
-
+from PDFGenerator import PdfSaveButton
 
 class Okno(QMainWindow):
     def __init__(self, width, height):
@@ -57,10 +57,11 @@ class Przyciski(QWidget):
         self.__button_load_file = QPushButton("wczytaj plik")
         self.__first_slider = QPushButton("tutaj bedzie suwak") #todo
         self.__second_slider = QPushButton("tutaj bedzie drugi suwak") #todo
-        self.__button_export_to_pdf = QPushButton("eksportuj do pdf") #todo
         self.__button_reset = QPushButton("resetuj")
         self.__button_daily_total = QPushButton("dziennie/(CAŁKOWICIE)")
-        self.make_graph()
+        self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
+                               self.__patients_or_cured)
+        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__add_buttons_to_layout()
         self.setLayout(self.__layout)
 
@@ -73,6 +74,7 @@ class Przyciski(QWidget):
 
     def __add_buttons_to_layout(self):
         self.__layout.addWidget(self.__errors_label, 0, 0, 1, 2)
+        self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__searcher, 0, 4, 1, 2)
         self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
         self.__layout.addWidget(self.__button_load_file, 3, 4, 1, 2)
@@ -126,7 +128,9 @@ class Przyciski(QWidget):
     def make_graph(self):
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
                                self.__patients_or_cured)
+        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
+        self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
 
     def __btn1(self):
         file = WczytajPlik()

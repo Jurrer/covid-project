@@ -13,8 +13,11 @@ class Wykres(FigureCanvasQTAgg):
         self.__countries_list = countries_list
         self.__param = param
         self.__patients_or_cured = patients_or_cured
-
+        self.__plot_title = f"Covid-19 number of {self.__patients_or_cured} since 22.01.2020"
         self.__init_fig()
+
+    def get_plot_title(self):
+        return self.__plot_title
 
     def get_img(self):
         image_data = BytesIO()
@@ -25,7 +28,7 @@ class Wykres(FigureCanvasQTAgg):
 
     def __init_fig(self):
         self.__fig.add_subplot(111)
-        self.__fig.suptitle(f"Covid-19 number of {self.__patients_or_cured} since 22.01.2020")
+        self.__fig.suptitle(self.__plot_title)
         self.__init_view()
         self.__fig.tight_layout()
 
@@ -35,10 +38,12 @@ class Wykres(FigureCanvasQTAgg):
         graph.set_ylabel(f"{self.__param.capitalize()} number of {self.__patients_or_cured}")
         graph.grid()
         if self.__countries_data and self.__countries_list:
-            ile_miesiecy = len(self.__countries_data["Poland"])/30
-            odstep_miedzy_punktami_x = len(self.__countries_data["Poland"])/ile_miesiecy  # to powinno być (max - min)/ile_miesiecy (wartosci ze sliderów)
-            graph.xaxis.set_major_locator(MultipleLocator(odstep_miedzy_punktami_x)) #to coś ustawia wartości na osi x co jakiś odstęp
-            graph.tick_params(axis ='x', rotation = 45)
+            ile_miesiecy = len(self.__countries_data["Poland"]) / 30
+            odstep_miedzy_punktami_x = len(self.__countries_data[
+                                               "Poland"]) / ile_miesiecy  # to powinno być (max - min)/ile_miesiecy (wartosci ze sliderów)
+            graph.xaxis.set_major_locator(
+            MultipleLocator(odstep_miedzy_punktami_x))  # to coś ustawia wartości na osi x co jakiś odstęp
+            graph.tick_params(axis='x', rotation=45)
             x = self.__countries_data["Country/Region"]
 
             if self.__param == "daily":
