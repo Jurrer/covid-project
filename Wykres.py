@@ -6,11 +6,14 @@ from matplotlib.ticker import MultipleLocator
 
 
 class Wykres(FigureCanvasQTAgg):
-    def __init__(self, countries_data, countries_list, param, patients_or_cured, figsize=(7, 4), dpi=100):
+    def __init__(self, countries_data, countries_list, param, patients_or_cured, lower_limit=0, upper_limit=400,
+                 figsize=(7, 4), dpi=100):
         self.__fig = Figure(figsize=figsize, dpi=dpi)
         super().__init__(self.__fig)
         self.__countries_data = countries_data
         self.__countries_list = countries_list
+        self.__lower_limit = lower_limit
+        self.__upper_limit = upper_limit
         self.__param = param
         self.__patients_or_cured = patients_or_cured
         self.__plot_title = f"Covid-19 number of {self.__patients_or_cured} since 22.01.2020"
@@ -34,27 +37,31 @@ class Wykres(FigureCanvasQTAgg):
 
     def __init_view(self):
         graph = self.__fig.axes[0]
-        graph.set_xlabel("Days (subsequent data)")
+        graph.set_xlabel("Days (month/day/year)")
         graph.set_ylabel(f"{self.__param.capitalize()} number of {self.__patients_or_cured}")
         graph.grid()
         if self.__countries_data and self.__countries_list:
-            ile_miesiecy = len(self.__countries_data["Poland"]) / 30
-            odstep_miedzy_punktami_x = len(self.__countries_data[
-                                               "Poland"]) / ile_miesiecy  # to powinno być (max - min)/ile_miesiecy (wartosci ze sliderów)
+            min = self.__lower_limit
+            max = self.__upper_limit
+            # ile_miesiecy = int(len(self.__countries_data["Country/Region"][min:max]) / 30)
+            if (max - min) > 14:
+                odstep_miedzy_punktami_x = (max - min) / 14
+            else:
+                odstep_miedzy_punktami_x = 1
             graph.xaxis.set_major_locator(
-            MultipleLocator(odstep_miedzy_punktami_x))  # to coś ustawia wartości na osi x co jakiś odstęp
+                MultipleLocator(odstep_miedzy_punktami_x))  # to coś ustawia wartości na osi x co jakiś odstęp
+            x = self.__countries_data["Country/Region"][min:max]
             graph.tick_params(axis='x', rotation=45)
-            x = self.__countries_data["Country/Region"]
 
             if self.__param == "daily":
                 countries_data_daily = self.__daily(self.__countries_data)
                 for country in self.__countries_list:
-                    graph.plot(x, countries_data_daily[country], label=country)
+                    graph.plot(x, countries_data_daily[country][min:max], label=country)
                 graph.legend(loc="best")
 
             elif self.__param == "total":
                 for country in self.__countries_list:
-                    graph.semilogy(x, self.__countries_data[country], label=country)
+                    graph.semilogy(x, self.__countries_data[country][min:max], label=country)
                 graph.legend(loc="best")
         else:
             graph.plot()
