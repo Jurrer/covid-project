@@ -43,9 +43,13 @@ class Wykres(FigureCanvasQTAgg):
         if self.__countries_data and self.__countries_list:
             minimum = self.__lower_limit
             maximum = self.__upper_limit
+            if maximum<minimum:
+                tmp = maximum
+                maximum = minimum
+                minimum = tmp
             # ile_miesiecy = int(len(self.__countries_data["Country/Region"][min:max]) / 30)
             if (maximum - minimum) > 14:
-                odstep_miedzy_punktami_x = abs((maximum - minimum)) / 14
+                odstep_miedzy_punktami_x = (maximum - minimum) / 14
             else:
                 odstep_miedzy_punktami_x = 1
             graph.xaxis.set_major_locator(
