@@ -8,7 +8,7 @@ class WczytajPlik(QFileDialog):
         super().__init__()
         self.blad = None
         filename = self.__open_file()
-        #self.__test_filename(filename)
+        # self.__test_filename(filename)
         self.__calendar_list = list()
 
     def get_calendar(self):
@@ -32,7 +32,6 @@ class WczytajPlik(QFileDialog):
         except BrakPliku as err:
             self.blad = str(err)
             self.countries_data = None
-
 
     def __test_filename(self, filename):
         print(filename)

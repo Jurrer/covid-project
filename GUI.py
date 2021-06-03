@@ -37,6 +37,7 @@ class Zakladki(QWidget):
 
         self.__tabs.addTab(Przyciski("Zachorowania"), "Zachorowania")
         self.__tabs.addTab(Przyciski("Ozdrowienia"), "Ozdrowienia")
+        self.__tabs.addTab(Przyciski("Śmierci"), "Śmierci")
 
         layout.addWidget(self.__tabs)
         self.setLayout(layout)
@@ -87,7 +88,6 @@ class Przyciski(QWidget):
         self.__button_daily_total.clicked.connect(self.__change_DOT())
         self.__button_reset.clicked.connect(self.__clear_window)
 
-    # lambda _: print(self.__daily_or_total)
     def __clear_window(self):
         self.__choosed_countries.clear()
         self.make_graph()
@@ -100,11 +100,13 @@ class Przyciski(QWidget):
 
     def __init_POC(self):
         if self.__tab_name == "Zachorowania":
-            patients_or_cured = "patients"
+            patients_or_cured = "zachorowań"
         elif self.__tab_name == "Ozdrowienia":
-            patients_or_cured = "cured"
+            patients_or_cured = "ozdrowień"
+        elif self.__tab_name == "Śmierci":
+            patients_or_cured = "śmierci"
         else:
-            patients_or_cured = "patients/cured"
+            patients_or_cured = "patients/cured/deaths"
         return patients_or_cured
 
     def __change_DOT(self):
@@ -189,11 +191,11 @@ class Sliders(QWidget):
         return slider
 
     def __upper_changed(self):
-        if self.__lower_slider.value() >= self.__upper_slider.value()-1:
+        if self.__lower_slider.value() >= self.__upper_slider.value() - 1:
             self.__upper_slider.setValue(self.__lower_slider.value() + 2)
 
     def __lower_changed(self):
-        if self.__upper_slider.value() <= self.__lower_slider.value()+1:
+        if self.__upper_slider.value() <= self.__lower_slider.value() + 1:
             self.__lower_slider.setValue(self.__upper_slider.value() - 2)
 
     def get_lower_value(self):

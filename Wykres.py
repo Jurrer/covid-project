@@ -16,7 +16,7 @@ class Wykres(FigureCanvasQTAgg):
         self.__upper_limit = upper_limit
         self.__param = param
         self.__patients_or_cured = patients_or_cured
-        self.__plot_title = f"Covid-19 number of {self.__patients_or_cured} since 22.01.2020"
+        self.__plot_title = f"Covid-19 liczba {self.__patients_or_cured} od 22.01.2020"
         self.__init_fig()
 
     def get_plot_title(self):
@@ -37,8 +37,8 @@ class Wykres(FigureCanvasQTAgg):
 
     def __init_view(self):
         graph = self.__fig.axes[0]
-        graph.set_xlabel("Days (month/day/year)")
-        graph.set_ylabel(f"{self.__param.capitalize()} number of {self.__patients_or_cured}")
+        graph.set_xlabel("Dni (miesiąc/dzień/rok)")
+        graph.set_ylabel(f"Całkowita liczba {self.__patients_or_cured}")
         graph.grid()
         if self.__countries_data and self.__countries_list:
             minimum = self.__lower_limit
@@ -57,11 +57,13 @@ class Wykres(FigureCanvasQTAgg):
                 countries_data_daily = self.__daily(self.__countries_data)
                 for country in self.__countries_list:
                     graph.plot(x, countries_data_daily[country][minimum:maximum], label=country)
+                graph.set_ylabel(f"Dzienna liczba {self.__patients_or_cured}")
                 graph.legend(loc="best")
 
             elif self.__param == "total":
                 for country in self.__countries_list:
                     graph.semilogy(x, self.__countries_data[country][minimum:maximum], label=country)
+                graph.set_ylabel(f"Całkowita liczba {self.__patients_or_cured}")
                 graph.legend(loc="best")
         else:
             graph.plot()

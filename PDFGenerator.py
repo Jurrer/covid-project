@@ -51,13 +51,13 @@ class PdfSaveButton(QPushButton):
     def __zmien_filename(self, filename):
         name = filename.split("/")[-1]
         if "." in name:
-            name2 = name.split(".")[0]+".pdf"
+            name2 = name.split(".")[0] + ".pdf"
         else:
             name2 = name + ".pdf"
         endfilename = filename.split("/")[:-1]
         endfilename2 = str()
         for element in endfilename:
-            endfilename2 = endfilename2 +element+"/"
-        endfilename2 = endfilename2 +name2
+            endfilename2 = endfilename2 + element + "/"
+        endfilename2 = endfilename2 + name2
 
         return endfilename2
