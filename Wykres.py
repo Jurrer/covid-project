@@ -41,27 +41,27 @@ class Wykres(FigureCanvasQTAgg):
         graph.set_ylabel(f"{self.__param.capitalize()} number of {self.__patients_or_cured}")
         graph.grid()
         if self.__countries_data and self.__countries_list:
-            min = self.__lower_limit
-            max = self.__upper_limit
+            minimum = self.__lower_limit
+            maximum = self.__upper_limit
             # ile_miesiecy = int(len(self.__countries_data["Country/Region"][min:max]) / 30)
-            if (max - min) > 14:
-                odstep_miedzy_punktami_x = (max - min) / 14
+            if (maximum - minimum) > 14:
+                odstep_miedzy_punktami_x = abs((maximum - minimum)) / 14
             else:
                 odstep_miedzy_punktami_x = 1
             graph.xaxis.set_major_locator(
                 MultipleLocator(odstep_miedzy_punktami_x))  # to coś ustawia wartości na osi x co jakiś odstęp
-            x = self.__countries_data["Country/Region"][min:max]
+            x = self.__countries_data["Country/Region"][minimum:maximum]
             graph.tick_params(axis='x', rotation=45)
 
             if self.__param == "daily":
                 countries_data_daily = self.__daily(self.__countries_data)
                 for country in self.__countries_list:
-                    graph.plot(x, countries_data_daily[country][min:max], label=country)
+                    graph.plot(x, countries_data_daily[country][minimum:maximum], label=country)
                 graph.legend(loc="best")
 
             elif self.__param == "total":
                 for country in self.__countries_list:
-                    graph.semilogy(x, self.__countries_data[country][min:max], label=country)
+                    graph.semilogy(x, self.__countries_data[country][minimum:maximum], label=country)
                 graph.legend(loc="best")
         else:
             graph.plot()

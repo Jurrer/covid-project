@@ -1,11 +1,12 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QTabWidget, QPushButton, \
-    QGridLayout, QLineEdit, QFormLayout, QGroupBox, QScrollArea
+    QGridLayout, QLineEdit, QFormLayout, QGroupBox, QScrollArea, QSlider
 from Wykres import Wykres
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
 from PDFGenerator import PdfSaveButton
+
 
 class Okno(QMainWindow):
     def __init__(self, width, height):
@@ -55,12 +56,17 @@ class Przyciski(QWidget):
         self.__searcher = QLineEdit()
         self.__searcher.setPlaceholderText("Szukaj...")
         self.__button_load_file = QPushButton("wczytaj plik")
-        self.__first_slider = QPushButton("tutaj bedzie suwak") #todo
-        self.__second_slider = QPushButton("tutaj bedzie drugi suwak") #todo
+        self.__first_slider = QSlider(QtCore.Qt.Horizontal)
+        self.__second_slider = QSlider(QtCore.Qt.Horizontal)
+        self.__first_slider.setMinimum(0)
+        self.__first_slider.setMaximum(400)
+        self.__second_slider.setMinimum(0)
+        self.__second_slider.setMaximum(400)
+        self.__second_slider.setValue(400)
         self.__button_reset = QPushButton("resetuj")
         self.__button_daily_total = QPushButton("dziennie/(CAŁKOWICIE)")
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
-                               self.__patients_or_cured)
+                               self.__patients_or_cured, self.__first_slider.value(), self.__second_slider.value())
         self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__add_buttons_to_layout()
         self.setLayout(self.__layout)
@@ -78,25 +84,25 @@ class Przyciski(QWidget):
         self.__layout.addWidget(self.__searcher, 0, 4, 1, 2)
         self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
         self.__layout.addWidget(self.__button_load_file, 3, 4, 1, 2)
-        self.__layout.addWidget(self.__first_slider, 4, 4, 1, 2)
-        self.__layout.addWidget(self.__second_slider, 5, 4, 1, 2)
+        self.__layout.addWidget(self.__first_slider, 4, 4)
+        self.__layout.addWidget(self.__second_slider, 5, 4)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
         self.__layout.addWidget(self.__button_reset, 7, 4, 1, 2)
         self.__layout.addWidget(self.__button_daily_total, 8, 4, 1, 2)
         self.__button_load_file.clicked.connect(self.__btn1)
         self.__searcher.textEdited.connect(self.__wyszukaj)
-        self.__first_slider.clicked.connect(self.__wypisz) #todo
-        self.__second_slider.clicked.connect(lambda _: print(self.__daily_or_total)) #todo
+        self.__first_slider.valueChanged.connect(lambda: self.make_graph())
+        self.__second_slider.valueChanged.connect(lambda: self.make_graph())
         self.__button_daily_total.clicked.connect(self.__change_DOT())
         self.__button_reset.clicked.connect(self.__clear_window)
 
+    # lambda _: print(self.__daily_or_total)
     def __clear_window(self):
         self.__choosed_countries.clear()
         self.make_graph()
         self.__countries.reset()
         self.error_change(None)
         self.__searcher.setText("")
-
 
     def set_choosed_countries(self, arg):
         self.__choosed_countries = arg
@@ -127,7 +133,7 @@ class Przyciski(QWidget):
 
     def make_graph(self):
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
-                               self.__patients_or_cured)
+                               self.__patients_or_cured, self.__first_slider.value(), self.__second_slider.value())
         self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
@@ -237,7 +243,6 @@ class PointsTab(QScrollArea):
         else:
             btn.setStyleSheet("background-color : ")
 
-
     def __choose_country(self, btn, name):
         return lambda _: self.__ogarnij_wybieranie(btn, name)
 
@@ -263,4 +268,3 @@ class PointsTab(QScrollArea):
             self.__blad = None
             self.__przyciski.error_change(self.__blad)
             btn.setStyleSheet("background-color : ")
-
