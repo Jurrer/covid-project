@@ -18,10 +18,10 @@ class PdfReportGenerator:
 
     def __create_pdf_template(self, filepath, img, pagesize):
         canvas = Canvas(filepath, pagesize=pagesize)
-        title_magic_offset, img_magic_offset = 100, 600
-        title_x, title_y = A4[0] / 2, A4[1] - title_magic_offset
+        title_magic_offset, img_magic_offset = 50, 600
+        title_x, title_y = A4[0] / 4, A4[1] - title_magic_offset
         img_x, img_y = 0, A4[1] - img_magic_offset
-        title = "Covid-plots generated plot"
+        title = f"Covid-plots by {self.__author} generated plot"
         canvas.drawString(title_x, title_y, title)
         canvas.drawImage(img, img_x, img_y, 550, 400)
 
@@ -45,7 +45,7 @@ class PdfSaveButton(QPushButton):
             self.__pdf_generator.create_and_save_report(img, filename)
 
     def __prepare_file_chooser(self):
-        filename, _ = QFileDialog.getSaveFileName(self, "Save PDF report", filter=".pdf")
+        filename, _ = QFileDialog.getSaveFileName(self, "Save PDF report", filter="All Files (*)")
         return filename
 
     def __zmien_filename(self, filename):

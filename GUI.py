@@ -1,7 +1,7 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QDesktopWidget, QWidget, QTabWidget, QPushButton, \
-    QGridLayout, QLineEdit, QFormLayout, QGroupBox, QScrollArea, QSlider
+    QGridLayout, QLineEdit, QFormLayout, QGroupBox, QScrollArea, QSlider, QVBoxLayout
 from Wykres import Wykres
 from dzialania_na_plikach import WczytajPlik
 from exceptions import LimitPanstw
@@ -56,17 +56,11 @@ class Przyciski(QWidget):
         self.__searcher = QLineEdit()
         self.__searcher.setPlaceholderText("Szukaj...")
         self.__button_load_file = QPushButton("wczytaj plik")
-        self.__first_slider = QSlider(QtCore.Qt.Horizontal)
-        self.__second_slider = QSlider(QtCore.Qt.Horizontal)
-        self.__first_slider.setMinimum(0)
-        self.__first_slider.setMaximum(400)
-        self.__second_slider.setMinimum(0)
-        self.__second_slider.setMaximum(400)
-        self.__second_slider.setValue(400)
+        self.__sliders = Sliders(self)
         self.__button_reset = QPushButton("resetuj")
         self.__button_daily_total = QPushButton("dziennie/(CAŁKOWICIE)")
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
-                               self.__patients_or_cured, self.__first_slider.value(), self.__second_slider.value())
+                               self.__patients_or_cured)
         self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__add_buttons_to_layout()
         self.setLayout(self.__layout)
@@ -82,17 +76,14 @@ class Przyciski(QWidget):
         self.__layout.addWidget(self.__errors_label, 0, 0, 1, 2)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__searcher, 0, 4, 1, 2)
-        self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
+        self.__layout.addWidget(self.__countries, 1, 4, 1, 2)
         self.__layout.addWidget(self.__button_load_file, 3, 4, 1, 2)
-        self.__layout.addWidget(self.__first_slider, 4, 4)
-        self.__layout.addWidget(self.__second_slider, 5, 4)
+        self.__layout.addWidget(self.__sliders, 4, 4, 1, 2)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
         self.__layout.addWidget(self.__button_reset, 7, 4, 1, 2)
         self.__layout.addWidget(self.__button_daily_total, 8, 4, 1, 2)
         self.__button_load_file.clicked.connect(self.__btn1)
         self.__searcher.textEdited.connect(self.__wyszukaj)
-        self.__first_slider.valueChanged.connect(lambda: self.make_graph())
-        self.__second_slider.valueChanged.connect(lambda: self.make_graph())
         self.__button_daily_total.clicked.connect(self.__change_DOT())
         self.__button_reset.clicked.connect(self.__clear_window)
 
@@ -133,7 +124,8 @@ class Przyciski(QWidget):
 
     def make_graph(self):
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
-                               self.__patients_or_cured, self.__first_slider.value(), self.__second_slider.value())
+                               self.__patients_or_cured, self.__sliders.get_lower_value(),
+                               self.__sliders.get_higher_value())
         self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
@@ -143,6 +135,11 @@ class Przyciski(QWidget):
         self.error_change(file.blad)
         self.__countries_data = file.get_countries_data()
         if self.__countries_data:
+            first_key = list(self.__countries_data.keys())[0]
+            data_length = len(self.__countries_data[first_key])
+            self.__layout.removeWidget(self.__sliders)
+            self.__sliders = Sliders(self, data_length)
+            self.__layout.addWidget(self.__sliders, 4, 4, 1, 2)
             self.__countries = PointsTab(list(self.__countries_data.keys())[1:], self)
             self.__layout.addWidget(self.__countries, 1, 4, 2, 2)
 
@@ -167,6 +164,57 @@ class Przyciski(QWidget):
 
     def __wypisz(self):
         print(self.__choosed_countries)
+
+
+class Sliders(QWidget):
+    def __init__(self, przyciski, max_value=100):
+        super().__init__()
+        self.przyciski = przyciski
+        self.__max_value = max_value
+        self.__min_value = 0
+        self.__lower_slider = self.__make_lower_slider()
+        self.__upper_slider = self.__make_upper_slider()
+        self.__make_layout()
+
+    def __make_lower_slider(self):
+        slider = self.__make_slider(self.__min_value)
+        slider.valueChanged.connect(self.__lower_changed)
+        slider.sliderReleased.connect(self.przyciski.make_graph)
+        return slider
+
+    def __make_upper_slider(self):
+        slider = self.__make_slider(self.__max_value)
+        slider.valueChanged.connect(self.__upper_changed)
+        slider.sliderReleased.connect(self.przyciski.make_graph)
+        return slider
+
+    def __upper_changed(self):
+        if self.__lower_slider.value() >= self.__upper_slider.value()-1:
+            self.__upper_slider.setValue(self.__lower_slider.value() + 2)
+
+    def __lower_changed(self):
+        if self.__upper_slider.value() <= self.__lower_slider.value()+1:
+            self.__lower_slider.setValue(self.__upper_slider.value() - 2)
+
+    def get_lower_value(self):
+        return self.__lower_slider.value()
+
+    def get_higher_value(self):
+        return self.__upper_slider.value()
+
+    def __make_slider(self, init_val):
+        slider = QSlider(QtCore.Qt.Horizontal)
+        slider.setMinimum(self.__min_value)
+        slider.setMaximum(self.__max_value)
+        slider.setMinimumWidth(100)
+        slider.setValue(init_val)
+        return slider
+
+    def __make_layout(self):
+        layout = QVBoxLayout()
+        layout.addWidget(self.__lower_slider)
+        layout.addWidget(self.__upper_slider)
+        self.setLayout(layout)
 
 
 class PointsTab(QScrollArea):
