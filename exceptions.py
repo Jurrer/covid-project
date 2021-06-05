@@ -18,5 +18,5 @@ class LimitPanstw(Exception):
 
 class BrakPliku(Exception):
     def __init__(self):
-        msg = "Brak Pliku"
+        msg = "Brak Pliku!"
         super().__init__(msg)
