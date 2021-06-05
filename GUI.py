@@ -62,7 +62,7 @@ class Przyciski(QWidget):
         self.__button_daily_total = QPushButton("dziennie/(CAŁKOWICIE)")
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
                                self.__patients_or_cured)
-        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
+        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres, self)
         self.__add_buttons_to_layout()
         self.setLayout(self.__layout)
 
@@ -128,7 +128,7 @@ class Przyciski(QWidget):
         self.__wykres = Wykres(self.__countries_data, self.__choosed_countries, self.__daily_or_total,
                                self.__patients_or_cured, self.__sliders.get_lower_value(),
                                self.__sliders.get_higher_value())
-        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres)
+        self.__button_export_to_pdf = PdfSaveButton("eksportuj do pdf", self.__wykres, self)
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
 

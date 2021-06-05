@@ -4,6 +4,8 @@ from Wykres import Wykres
 from PyQt5.QtWidgets import QPushButton, QFileDialog
 from reportlab.lib.utils import ImageReader
 
+from exceptions import BrakPliku
+
 
 class PdfReportGenerator:
 
@@ -29,20 +31,29 @@ class PdfReportGenerator:
 
 
 class PdfSaveButton(QPushButton):
-    def __init__(self, name, wykres):
+    def __init__(self, name, wykres, przyciski):
         super().__init__(name)
         self.__chart = wykres
         self.__pdf_generator = PdfReportGenerator()
         self.clicked.connect(self.__save_btn_action)
+        self.przyciski = przyciski
 
     def __save_btn_action(self):
         img_data = self.__chart.get_img()
         img = ImageReader(img_data)
 
-        filename = self.__prepare_file_chooser()
-        filename = self.__zmien_filename(filename)
-        if filename:  # tu miejsce na wgranie błędu
-            self.__pdf_generator.create_and_save_report(img, filename)
+        try:
+            filename = self.__prepare_file_chooser()
+            if filename:  # tu miejsce na wgranie błędu
+                self.blad = None
+                self.przyciski.error_change(self.blad)
+                filename = self.__zmien_filename(filename)
+                self.__pdf_generator.create_and_save_report(img, filename)
+            else:
+                raise BrakPliku
+        except BrakPliku as err:
+            self.blad = str(err)
+            self.przyciski.error_change(self.blad)
 
     def __prepare_file_chooser(self):
         filename, _ = QFileDialog.getSaveFileName(self, "Save PDF report", filter="All Files (*)")
