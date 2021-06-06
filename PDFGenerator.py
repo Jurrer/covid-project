@@ -1,6 +1,6 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen.canvas import Canvas
-from Wykres import Wykres
+import os
 from PyQt5.QtWidgets import QPushButton, QFileDialog
 from reportlab.lib.utils import ImageReader
 
@@ -49,6 +49,7 @@ class PdfSaveButton(QPushButton):
                 self.przyciski.error_change(self.blad)
                 filename = self.__zmien_filename(filename)
                 self.__pdf_generator.create_and_save_report(img, filename)
+                os.startfile(filename)
             else:
                 raise BrakPliku
         except BrakPliku as err:
