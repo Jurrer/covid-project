@@ -81,5 +81,5 @@ class Wykres(FigureCanvasQTAgg):
             if i == 0:
                 listab.append(0)
             else:
-                listab.append(lista[i] - lista[i - 1])
+                listab.append(abs(lista[i] - lista[i - 1]))
         return listab
