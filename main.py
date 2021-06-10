@@ -1,4 +1,5 @@
 # data from: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases
+#last update
 import sys
 from PyQt5.QtWidgets import QApplication
 from GUI import Okno
