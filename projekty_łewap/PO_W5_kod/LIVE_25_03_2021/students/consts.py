@@ -1,2 +1,0 @@
-VALID = 1
-INVALID = -1
