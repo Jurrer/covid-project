@@ -132,6 +132,8 @@ class Przyciski(QWidget):
         self.__layout.addWidget(self.__wykres, 1, 0, 7, 4)
         self.__layout.addWidget(self.__button_export_to_pdf, 6, 4, 1, 2)
 
+
+
     def __btn1(self):
         file = WczytajPlik()
         self.error_change(file.blad)
